@@ -1,2 +1,27 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Unreal
+*.uasset filter=lfs diff=lfs merge=lfs -text
+*.umap   filter=lfs diff=lfs merge=lfs -text
+*.upack  filter=lfs diff=lfs merge=lfs -text
+
+# DCC/source assets
+*.fbx    filter=lfs diff=lfs merge=lfs -text
+*.blend  filter=lfs diff=lfs merge=lfs -text
+*.psd    filter=lfs diff=lfs merge=lfs -text
+*.psb    filter=lfs diff=lfs merge=lfs -text
+
+# Audio
+*.wav    filter=lfs diff=lfs merge=lfs -text
+*.ogg    filter=lfs diff=lfs merge=lfs -text
+*.flac   filter=lfs diff=lfs merge=lfs -text
+
+# Textures / HDRI
+*.png    filter=lfs diff=lfs merge=lfs -text
+*.jpg    filter=lfs diff=lfs merge=lfs -text
+*.jpeg   filter=lfs diff=lfs merge=lfs -text
+*.tga    filter=lfs diff=lfs merge=lfs -text
+*.exr    filter=lfs diff=lfs merge=lfs -text
+*.hdr    filter=lfs diff=lfs merge=lfs -text
+
+# Video
+*.mp4    filter=lfs diff=lfs merge=lfs -text
+*.mov    filter=lfs diff=lfs merge=lfs -text
