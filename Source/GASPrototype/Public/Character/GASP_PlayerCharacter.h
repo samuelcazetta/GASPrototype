@@ -1,0 +1,33 @@
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GASP_BaseCharacter.h"
+#include "GASP_PlayerCharacter.generated.h"
+
+class UCameraComponent;
+class USpringArmComponent;
+
+UCLASS()
+class GASPROTOTYPE_API AGASP_PlayerCharacter : public AGASP_BaseCharacter
+{
+	GENERATED_BODY()
+
+public:
+	// Sets default values for this character's properties
+	AGASP_PlayerCharacter();
+
+protected:
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UCameraComponent> CameraComponent;
+	
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+};
