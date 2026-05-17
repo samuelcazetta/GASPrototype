@@ -3,17 +3,34 @@
 
 #include "GASPrototype/Public/Character/GASP_BaseCharacter.h"
 
+#include "AbilitySystemComponent.h"
+#include "GameplayTagContainer.h"
 
-// Sets default values
+
 AGASP_BaseCharacter::AGASP_BaseCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-// Called when the game starts or when spawned
-void AGASP_BaseCharacter::BeginPlay()
+UAbilitySystemComponent* AGASP_BaseCharacter::GetAbilitySystemComponent() const
 {
-	Super::BeginPlay();
-	
+	return nullptr;
 }
+
+void AGASP_BaseCharacter::GiveStartupAbilities()
+{
+	for (auto& Ability : StartupAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability);
+		GetAbilitySystemComponent()->GiveAbility(AbilitySpec);
+	}
+}
+
+void AGASP_BaseCharacter::ActivateAbility(const FGameplayTag AbilityTag)
+{
+	UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
+	if (!IsValid(AbilitySystemComponent)) return;
+	AbilitySystemComponent->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
+}
+
+

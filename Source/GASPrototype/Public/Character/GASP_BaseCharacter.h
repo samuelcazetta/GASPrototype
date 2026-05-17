@@ -3,21 +3,29 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "GASP_BaseCharacter.generated.h"
 
+class UGameplayAbility;
+class UGASP_GameplayAbility;
+struct FGameplayTag;
+
 UCLASS()
-class GASPROTOTYPE_API AGASP_BaseCharacter : public ACharacter
+class GASPROTOTYPE_API AGASP_BaseCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AGASP_BaseCharacter();
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	void ActivateAbility (FGameplayTag AbilityTag);
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	//virtual void BeginPlay() override;
+	void GiveStartupAbilities();
 
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "GASP|Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities; //Abilities BPs, not Objects
 };
