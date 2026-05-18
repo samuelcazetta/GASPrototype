@@ -42,6 +42,38 @@ AGASP_PlayerCharacter::AGASP_PlayerCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.0f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 1000.0f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+	
+	/*
+	UCharacterMovementComponent* Move = GetCharacterMovement(); 
+	Move->bOrientRotationToMovement = true;
+
+	Move->MaxWalkSpeed = 650.0f;
+	Move->MinAnalogWalkSpeed = 40.0f;
+	Move->MaxAcceleration = 4200.0f;
+
+	Move->GroundFriction = 4.0f;
+	Move->bUseSeparateBrakingFriction = true;
+	Move->BrakingFriction = 1.5f;
+	Move->BrakingFrictionFactor = 0.6f;
+	Move->BrakingDecelerationWalking = 1400.0f;
+	Move->BrakingSubStepTime = 1.0f / 60.0f;
+
+	Move->RotationRate = FRotator(0.0f, 900.0f, 0.0f);
+
+	Move->JumpZVelocity = 650.0f;
+	Move->GravityScale = 1.9f;
+	Move->AirControl = 0.5f;
+	Move->AirControlBoostMultiplier = 1.4f;
+	Move->AirControlBoostVelocityThreshold = 250.0f;
+	Move->FallingLateralFriction = 0.15f;
+	Move->BrakingDecelerationFalling = 250.0f;
+
+	Move->PerchRadiusThreshold = 20.0f;
+	Move->MaxStepHeight = 45.0f;
+	Move->SetWalkableFloorAngle(50.0f);
+	*/
+	
+	
 }
 
 UAbilitySystemComponent* AGASP_PlayerCharacter::GetAbilitySystemComponent() const

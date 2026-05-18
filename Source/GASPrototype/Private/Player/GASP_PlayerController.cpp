@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameplayTags/GASP_AbilitiesTags.h"
 #include "GASPrototype/Public/Character/GASP_BaseCharacter.h"
 
 
@@ -72,8 +73,8 @@ void AGASP_PlayerController::Move(const FInputActionValue& Value)
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	GetPawn()->AddMovementInput(ForwardDirection, MovementVector.Y);
-	GetPawn()->AddMovementInput(RightDirection, MovementVector.X);
+	BaseCharacter->AddMovementInput(ForwardDirection, MovementVector.Y);
+	BaseCharacter->AddMovementInput(RightDirection, MovementVector.X);
 }
 
 void AGASP_PlayerController::Look(const FInputActionValue& Value)
@@ -88,20 +89,21 @@ void AGASP_PlayerController::Look(const FInputActionValue& Value)
 void AGASP_PlayerController::Attack()
 {
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
+	BaseCharacter->ActivateAbility(GASPTags::Abilities::Attack);
+	
 	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Attack"));
-	//BaseCharacter->ActivateAbility();
 }
 
 void AGASP_PlayerController::Special()
 {
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
-	//BaseCharacter->ActivateAbility();
+	BaseCharacter->ActivateAbility(GASPTags::Abilities::Special);
 }
 
 void AGASP_PlayerController::Dash()
 {
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
-	//BaseCharacter->ActivateAbility();
+	BaseCharacter->ActivateAbility(GASPTags::Abilities::Dash);
 }
 
 
