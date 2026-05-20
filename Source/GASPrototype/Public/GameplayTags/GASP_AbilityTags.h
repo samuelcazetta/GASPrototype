@@ -7,8 +7,9 @@ namespace GASPTags
 	namespace Abilities
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attack);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(AttackContinue);
+		
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Dash);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Special);
-		
 	}
 }

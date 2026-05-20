@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
 #include "GASP_BaseCharacter.generated.h"
 
 class UGameplayAbility;
 class UGASP_GameplayAbility;
-struct FGameplayTag;
 
 UCLASS()
 class GASPROTOTYPE_API AGASP_BaseCharacter : public ACharacter, public IAbilitySystemInterface
@@ -19,7 +19,19 @@ class GASPROTOTYPE_API AGASP_BaseCharacter : public ACharacter, public IAbilityS
 public:
 	AGASP_BaseCharacter();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	void ActivateAbility (FGameplayTag AbilityTag);
+	
+	/**
+	 * This function implements a slight Hack 'n Slash like combo mechanic within GAS.
+	 * Input starts or continues sequences:
+	 * Tries primary ability (opener); falls back to secondary (combo chain) if primary fails.
+	 * If no combo is intended, just PrimaryTag is needed.
+	 * 
+	 * @param PrimaryTag The primary gameplay tag for the ability.
+	 * @param SecondaryTag The secondary gameplay tag for fallback ability. Only for combo Abilities.
+	 */
+	void ActivateAbility (const FGameplayTag& PrimaryTag, const FGameplayTag& SecondaryTag = FGameplayTag());
+	
+	bool IsMovementBlocked() const;
 
 protected:
 	//virtual void BeginPlay() override;

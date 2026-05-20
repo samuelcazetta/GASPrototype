@@ -5,14 +5,15 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "GameplayTags/GASP_AbilitiesTags.h"
+#include "GameplayTags/GASP_AbilityTags.h"
+#include "GameplayTags/GASP_EventTags.h"
 #include "GASPrototype/Public/Character/GASP_BaseCharacter.h"
 
 
 void AGASP_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-
+	
 	//Local PlayerSubsystem
 	UEnhancedInputLocalPlayerSubsystem* LocalPlayerSubsystem = ULocalPlayer::GetSubsystem<
 		UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
@@ -44,6 +45,12 @@ void AGASP_PlayerController::OnPossess(APawn* InPawn)
 	BaseCharacter = Cast<AGASP_BaseCharacter>(InPawn);
 }
 
+void AGASP_PlayerController::OnRep_Pawn()
+{
+	Super::OnRep_Pawn();
+	BaseCharacter = Cast<AGASP_BaseCharacter>(GetPawn());
+}
+
 void AGASP_PlayerController::OnUnPossess()
 {
 	Super::OnUnPossess();
@@ -65,7 +72,8 @@ void AGASP_PlayerController::StopJumping()
 void AGASP_PlayerController::Move(const FInputActionValue& Value)
 {
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
-
+	if (BaseCharacter->IsMovementBlocked()) return;
+	
 	const FVector2d MovementVector = Value.Get<FVector2D>();
 
 	//using camera as forward direction
@@ -89,15 +97,14 @@ void AGASP_PlayerController::Look(const FInputActionValue& Value)
 void AGASP_PlayerController::Attack()
 {
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
-	BaseCharacter->ActivateAbility(GASPTags::Abilities::Attack);
-	
-	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Attack"));
+	BaseCharacter->ActivateAbility(GASPTags::Abilities::Attack, GASPTags::Abilities::AttackContinue);
 }
 
 void AGASP_PlayerController::Special()
 {
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
 	BaseCharacter->ActivateAbility(GASPTags::Abilities::Special);
+	
 }
 
 void AGASP_PlayerController::Dash()
@@ -105,7 +112,6 @@ void AGASP_PlayerController::Dash()
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
 	BaseCharacter->ActivateAbility(GASPTags::Abilities::Dash);
 }
-
 
 bool AGASP_PlayerController::IsAlive() const
 {

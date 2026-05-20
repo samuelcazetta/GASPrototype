@@ -17,6 +17,7 @@ class GASPROTOTYPE_API AGASP_PlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	virtual void OnRep_Pawn() override;
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;

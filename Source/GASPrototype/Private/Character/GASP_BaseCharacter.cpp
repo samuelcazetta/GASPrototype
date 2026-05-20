@@ -2,9 +2,9 @@
 
 
 #include "GASPrototype/Public/Character/GASP_BaseCharacter.h"
-
 #include "AbilitySystemComponent.h"
 #include "GameplayTagContainer.h"
+#include "GameplayTags/GASP_StateTags.h"
 
 
 AGASP_BaseCharacter::AGASP_BaseCharacter()
@@ -26,11 +26,24 @@ void AGASP_BaseCharacter::GiveStartupAbilities()
 	}
 }
 
-void AGASP_BaseCharacter::ActivateAbility(const FGameplayTag AbilityTag)
+void AGASP_BaseCharacter::ActivateAbility(const FGameplayTag& PrimaryTag,
+                                          const FGameplayTag& SecondaryTag)
 {
 	UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
 	if (!IsValid(AbilitySystemComponent)) return;
-	AbilitySystemComponent->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
+
+	if (AbilitySystemComponent->TryActivateAbilitiesByTag(PrimaryTag.GetSingleTagContainer())) return;
+
+	if (SecondaryTag.IsValid())
+	{
+		AbilitySystemComponent->TryActivateAbilitiesByTag(SecondaryTag.GetSingleTagContainer());
+	}
 }
 
+bool AGASP_BaseCharacter::IsMovementBlocked() const
+{
+	UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
+	if (!IsValid(AbilitySystemComponent)) return false;
 
+	return AbilitySystemComponent->HasMatchingGameplayTag(GASPTags::States::Movement::InputBlocked);
+}

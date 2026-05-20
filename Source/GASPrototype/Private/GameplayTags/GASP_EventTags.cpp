@@ -1,0 +1,15 @@
+﻿#include "GameplayTags/GASP_EventTags.h"
+
+namespace GASPTags
+{
+	namespace Events
+	{
+		namespace Combo
+		{
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(WindowOpen, "GASPTags.Events.Combo.WindowOpen", "Tag for Combo Window Open Event");
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(WindowClose, "GASPTags.Events.Combo.WindowClose", "Tag for Combo Window Close Event");
+			
+		}
+		
+	}
+}
