@@ -32,6 +32,7 @@ public:
 	void ActivateAbility (const FGameplayTag& PrimaryTag, const FGameplayTag& SecondaryTag = FGameplayTag());
 	
 	bool IsMovementBlocked() const;
+	bool IsAlive() const;
 
 protected:
 	//virtual void BeginPlay() override;

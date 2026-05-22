@@ -18,6 +18,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GASP|Abilities")
 	bool bAbilityEnabled = true;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GASP|Abilities")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GASP|Debug")
 	bool bEnableDebug = false;
 };

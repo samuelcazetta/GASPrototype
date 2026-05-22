@@ -4,6 +4,10 @@ namespace GASPTags
 {
 	namespace Events
 	{
+		namespace Attack
+		{
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(MeleeTraceHit, "GASPTags.Events.Attack.MeleeTraceHit", "Tag for Melee Attack Event");
+		}
 		namespace Combo
 		{
 			UE_DEFINE_GAMEPLAY_TAG_COMMENT(WindowOpen, "GASPTags.Events.Combo.WindowOpen", "Tag for Combo Window Open Event");

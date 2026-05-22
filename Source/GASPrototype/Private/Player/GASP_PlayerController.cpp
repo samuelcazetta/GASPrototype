@@ -115,6 +115,5 @@ void AGASP_PlayerController::Dash()
 
 bool AGASP_PlayerController::IsAlive() const
 {
-	//todo: must consult the character
-	return true;
+	return BaseCharacter->IsAlive();
 }

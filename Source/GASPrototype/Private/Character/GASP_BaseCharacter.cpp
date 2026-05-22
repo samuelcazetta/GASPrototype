@@ -42,8 +42,13 @@ void AGASP_BaseCharacter::ActivateAbility(const FGameplayTag& PrimaryTag,
 
 bool AGASP_BaseCharacter::IsMovementBlocked() const
 {
-	UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
+	const UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
 	if (!IsValid(AbilitySystemComponent)) return false;
 
 	return AbilitySystemComponent->HasMatchingGameplayTag(GASPTags::States::Movement::InputBlocked);
+}
+
+bool AGASP_BaseCharacter::IsAlive() const
+{
+	return true;
 }
