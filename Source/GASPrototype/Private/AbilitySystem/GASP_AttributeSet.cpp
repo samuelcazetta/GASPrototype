@@ -22,6 +22,7 @@ void UGASP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallb
 {
 	Super::PostGameplayEffectExecute(Data);
 	
+	// Broadcast attribute initialization for UI
 	if (!bAttributesInitialized)
 	{
 		bAttributesInitialized = true;
@@ -31,6 +32,7 @@ void UGASP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallb
 
 void UGASP_AttributeSet::OnRep_AttributesInitialized()
 {
+	// Broadcast attribute initialization for UI
 	if (bAttributesInitialized)
 	{
 		OnAttributesInitialized.Broadcast();

@@ -18,6 +18,7 @@ class GASPROTOTYPE_API AGASP_PlayerState : public APlayerState, public IAbilityS
 public:
 	AGASP_PlayerState();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 protected:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "GASP|Abilities")

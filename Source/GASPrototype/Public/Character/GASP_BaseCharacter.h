@@ -6,10 +6,12 @@
 #include "GameFramework/Character.h"
 #include "GASP_BaseCharacter.generated.h"
 
+class UAttributeSet;
 class UGameplayEffect;
 class UGameplayAbility;
 class UGASP_GameplayAbility;
 
+//Data container for hit reaction effects
 USTRUCT(BlueprintType)
 struct FHitReactContainer
 {
@@ -25,7 +27,11 @@ struct FHitReactContainer
 	TObjectPtr<UParticleSystem> Particle;
 };
 
-UCLASS()
+//Delegate for telling UI that ASC and AttributeSet are initialized
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FASCInitialized, UAbilitySystemComponent*, ASC, UAttributeSet*,
+                                             AttributeSet);
+
+UCLASS(Abstract)
 class GASPROTOTYPE_API AGASP_BaseCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
@@ -33,7 +39,11 @@ class GASPROTOTYPE_API AGASP_BaseCharacter : public ACharacter, public IAbilityS
 public:
 	AGASP_BaseCharacter();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	
+	virtual UAttributeSet* GetAttributeSet() const;
+
+	UPROPERTY(BlueprintAssignable)
+	FASCInitialized OnASCInitialized; //Delegate for telling UI that ASC is initialized
+
 	/**
 	 * This function implements a slight Hack 'n Slash like combo mechanic within GAS.
 	 * Input starts or continues sequences:
@@ -43,30 +53,26 @@ public:
 	 * @param PrimaryTag The primary gameplay tag for the ability.
 	 * @param SecondaryTag The secondary gameplay tag for fallback ability. Only for combo Abilities.
 	 */
-	void ActivateAbility (const FGameplayTag& PrimaryTag, const FGameplayTag& SecondaryTag = FGameplayTag());
-	
+	void ActivateAbility(const FGameplayTag& PrimaryTag, const FGameplayTag& SecondaryTag = FGameplayTag());
+
 	bool IsMovementBlocked() const;
 	bool IsAlive() const;
 
 protected:
-	
 	//virtual void BeginPlay() override;
-	
+
 	void GiveStartupAbilities();
-	
+
 	void InitializeAttributes();
-	
 
 private:
-	
 	UPROPERTY(EditDefaultsOnly, Category = "GASP|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities; //Abilities BPs, not Objects
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "GASP|Effects")
 	TSubclassOf<UGameplayEffect> InitialAttributesEffect;
 
 protected:
-	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GASP|HitReact")
 	FHitReactContainer HitReactContainer;
 };

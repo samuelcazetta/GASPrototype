@@ -84,6 +84,15 @@ UAbilitySystemComponent* AGASP_PlayerCharacter::GetAbilitySystemComponent() cons
 	return GASPPlayerState->GetAbilitySystemComponent();
 }
 
+UAttributeSet* AGASP_PlayerCharacter::GetAttributeSet() const
+{
+	const AGASP_PlayerState* GASPPlayerState = Cast<AGASP_PlayerState>(GetPlayerState());
+	if (!IsValid(GASPPlayerState)) return nullptr;
+	
+	return GASPPlayerState->GetAttributeSet();
+	
+}
+
 void AGASP_PlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -91,10 +100,11 @@ void AGASP_PlayerCharacter::PossessedBy(AController* NewController)
 	//Initiating GAS on Server
 	if (!IsValid(GetAbilitySystemComponent()) || !HasAuthority()) return;
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
-	
-	
 	GiveStartupAbilities();
 	InitializeAttributes();
+	
+	//tell UI that ASC and AttributeSet are initialized
+	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet()); 
 }
 
 void AGASP_PlayerCharacter::OnRep_PlayerState()
@@ -104,6 +114,9 @@ void AGASP_PlayerCharacter::OnRep_PlayerState()
 	//Initiating GAS on Client
 	if (!IsValid(GetAbilitySystemComponent())) return;
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
+	
+	//tell UI that ASC and AttributeSet are initialized
+	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
 }
 
 

@@ -15,21 +15,20 @@ class GASPROTOTYPE_API AGASP_PlayerCharacter : public AGASP_BaseCharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AGASP_PlayerCharacter();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	
+	virtual UAttributeSet* GetAttributeSet() const override;
+
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
 protected:
-	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
-	
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
-	
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
