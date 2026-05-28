@@ -1,6 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
@@ -8,8 +6,24 @@
 #include "GameFramework/Character.h"
 #include "GASP_BaseCharacter.generated.h"
 
+class UGameplayEffect;
 class UGameplayAbility;
 class UGASP_GameplayAbility;
+
+USTRUCT(BlueprintType)
+struct FHitReactContainer
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimMontage> Montage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<USoundBase> Sound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UParticleSystem> Particle;
+};
 
 UCLASS()
 class GASPROTOTYPE_API AGASP_BaseCharacter : public ACharacter, public IAbilitySystemInterface
@@ -35,10 +49,24 @@ public:
 	bool IsAlive() const;
 
 protected:
+	
 	//virtual void BeginPlay() override;
+	
 	void GiveStartupAbilities();
+	
+	void InitializeAttributes();
+	
 
 private:
+	
 	UPROPERTY(EditDefaultsOnly, Category = "GASP|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities; //Abilities BPs, not Objects
+	
+	UPROPERTY(EditDefaultsOnly, Category = "GASP|Effects")
+	TSubclassOf<UGameplayEffect> InitialAttributesEffect;
+
+protected:
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GASP|HitReact")
+	FHitReactContainer HitReactContainer;
 };

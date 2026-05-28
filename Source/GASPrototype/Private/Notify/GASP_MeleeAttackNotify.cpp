@@ -10,11 +10,13 @@
 void UGASP_MeleeAttackNotify::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                          float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
+	
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 	if (!IsValid(MeshComp) || !IsValid(MeshComp->GetOwner())) return;
 
 	// sphere trace
 	const TArray<FHitResult> HitResults = PerformSphereTrace(MeshComp);
+	
 	
 	// send caught actors to avatar 
 	UGASP_BlueprintFunctionLibrary::SendEventsToActor(HitResults, MeshComp,
@@ -29,7 +31,8 @@ TArray<FHitResult> UGASP_MeleeAttackNotify::PerformSphereTrace(const USkeletalMe
 	const FVector ExtendedSocketDirection = UKismetMathLibrary::GetForwardVector(
 		SocketTransform.GetRotation().Rotator()) * ExtendedSocketDistance;
 	const FVector TraceEnd = TraceStart - ExtendedSocketDirection;
-
+	
+	
 	TArray<FHitResult> HitResults;
 	
 	// sphere trace
@@ -38,6 +41,7 @@ TArray<FHitResult> UGASP_MeleeAttackNotify::PerformSphereTrace(const USkeletalMe
 	                                       UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1),
 	                                       false, TArray<AActor*>(), Debug, HitResults, true,
 	                                       FLinearColor::Red, FLinearColor::Green, 0.3f);
+	
 
 	// return Pawns caught by trace
 	return HitResults;

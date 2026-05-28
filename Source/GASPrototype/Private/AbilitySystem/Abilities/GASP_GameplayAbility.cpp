@@ -1,4 +1,4 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AbilitySystem/GASP_GameplayAbility.h"
+#include "AbilitySystem/Abilities/GASP_GameplayAbility.h"

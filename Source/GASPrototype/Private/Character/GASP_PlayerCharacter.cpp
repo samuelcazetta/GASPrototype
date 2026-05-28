@@ -92,8 +92,9 @@ void AGASP_PlayerCharacter::PossessedBy(AController* NewController)
 	if (!IsValid(GetAbilitySystemComponent()) || !HasAuthority()) return;
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
 	
-	//Grant Startup Abilities
+	
 	GiveStartupAbilities();
+	InitializeAttributes();
 }
 
 void AGASP_PlayerCharacter::OnRep_PlayerState()

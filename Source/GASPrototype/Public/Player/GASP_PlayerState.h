@@ -7,6 +7,8 @@
 #include "GameFramework/PlayerState.h"
 #include "GASP_PlayerState.generated.h"
 
+class UGASP_AbilitySystemComponent;
+class UAttributeSet;
 class UAbilitySystemComponent;
 
 UCLASS()
@@ -19,6 +21,9 @@ public:
 protected:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "GASP|Abilities")
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<UGASP_AbilitySystemComponent> AbilitySystemComponent;
+	
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet;
 	
 };

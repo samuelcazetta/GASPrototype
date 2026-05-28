@@ -6,6 +6,8 @@ namespace GASPTags
 {
 	namespace Events
 	{
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN (HitReact);
+		
 		namespace Attack
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN (MeleeTraceHit);
