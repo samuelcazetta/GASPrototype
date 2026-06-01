@@ -52,7 +52,7 @@ void UGASP_WidgetComponent::InitializeAttributeDelegate()
 	}
 	else
 	{
-		BindToAttributeChanges();
+		BindToAttributeChanges(); 
 	}
 }
 
