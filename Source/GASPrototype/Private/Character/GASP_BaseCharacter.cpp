@@ -2,9 +2,13 @@
 
 
 #include "GASPrototype/Public/Character/GASP_BaseCharacter.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystem/GASP_AttributeSet.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayTags/GASP_EventTags.h"
 #include "GameplayTags/GASP_StateTags.h"
 
 
@@ -58,12 +62,37 @@ void AGASP_BaseCharacter::ActivateAbility(const FGameplayTag& PrimaryTag,
 	}
 }
 
+void AGASP_BaseCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+	UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
+	if (!IsValid(AbilitySystemComponent)) return;
+	
+	//if landed
+	if (PrevMovementMode == MOVE_Falling &&	GetCharacterMovement()->MovementMode == MOVE_Walking)
+	{
+		//if air-dashed, remove tag
+		if (AbilitySystemComponent->HasMatchingGameplayTag(GASPTags::States::Movement::AirDashed))
+		{
+			AbilitySystemComponent->RemoveLooseGameplayTag(GASPTags::States::Movement::AirDashed);
+		}
+	}
+}
+
 bool AGASP_BaseCharacter::IsMovementBlocked() const
 {
 	const UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
 	if (!IsValid(AbilitySystemComponent)) return false;
 
 	return AbilitySystemComponent->HasMatchingGameplayTag(GASPTags::States::Movement::InputBlocked);
+}
+
+bool AGASP_BaseCharacter::IsTangible() const
+{
+	const UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
+	if (!IsValid(AbilitySystemComponent)) return false;
+
+	return !AbilitySystemComponent->HasMatchingGameplayTag(GASPTags::States::Intangible);
 }
 
 bool AGASP_BaseCharacter::IsAlive() const

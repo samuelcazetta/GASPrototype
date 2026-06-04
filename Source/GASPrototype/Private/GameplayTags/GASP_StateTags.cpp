@@ -4,6 +4,8 @@ namespace GASPTags
 {
 	namespace States
 	{
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Intangible, "GASPTags.States.Intangible", "Tag for no damage interaction State");
+		
 		namespace ComboReady
 		{
 			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Stage1, "GASPTags.States.ComboReady.Stage1", "Tag for Combo stage 1 continuation window");
@@ -14,7 +16,8 @@ namespace GASPTags
 		
 		namespace Movement
 		{
-			UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputBlocked, "GASPTags.States.Movement.InputBlocked", "Tag for input blocked state");
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputBlocked, "GASPTags.States.Movement.InputBlocked", "Tag for input blocked State");
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(AirDashed, "GASPTags.States.Movement.AirDashed", "Tag for air dashed State");
 		}
 	}
 }

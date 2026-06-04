@@ -12,7 +12,7 @@ void UGASP_BlueprintFunctionLibrary::SendEventsToActor(TArray<FHitResult> HitRes
 	{
 		// checks 
 		AGASP_BaseCharacter* TargetCharacter = Cast<AGASP_BaseCharacter>(Hit.GetActor());
-		if (!IsValid(TargetCharacter) || !TargetCharacter->IsAlive()) continue;
+		if (!IsValid(TargetCharacter) || !TargetCharacter->IsAlive() || !TargetCharacter->IsTangible()) continue;
 		UAbilitySystemComponent* AbilitySystemComponent = TargetCharacter->GetAbilitySystemComponent();
 		if (!IsValid(AbilitySystemComponent)) continue;
 		

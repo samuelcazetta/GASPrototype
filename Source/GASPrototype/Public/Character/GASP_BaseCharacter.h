@@ -54,15 +54,17 @@ public:
 	 * @param SecondaryTag The secondary gameplay tag for fallback ability. Only for combo Abilities.
 	 */
 	void ActivateAbility(const FGameplayTag& PrimaryTag, const FGameplayTag& SecondaryTag = FGameplayTag());
-
+	
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
+	
 	bool IsMovementBlocked() const;
+	bool IsTangible() const;
 	bool IsAlive() const;
 
 protected:
 	//virtual void BeginPlay() override;
 
 	void GiveStartupAbilities();
-
 	void InitializeAttributes();
 
 private:

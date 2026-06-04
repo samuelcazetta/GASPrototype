@@ -20,4 +20,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GASP|Debug")
 	bool bEnableDebug = false;
+	
+public:
+	UFUNCTION(BlueprintCallable)
+	void RemoveMatchingLooseTags(FGameplayTagContainer LooseTags);
 };
