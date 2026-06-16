@@ -4,6 +4,7 @@
 #include "Character/GASP_PlayerCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/GASP_AttributeSet.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -42,7 +43,7 @@ AGASP_PlayerCharacter::AGASP_PlayerCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.0f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 1000.0f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-	
+
 	/*
 	UCharacterMovementComponent* Move = GetCharacterMovement(); 
 	Move->bOrientRotationToMovement = true;
@@ -72,8 +73,6 @@ AGASP_PlayerCharacter::AGASP_PlayerCharacter()
 	Move->MaxStepHeight = 45.0f;
 	Move->SetWalkableFloorAngle(50.0f);
 	*/
-	
-	
 }
 
 UAbilitySystemComponent* AGASP_PlayerCharacter::GetAbilitySystemComponent() const
@@ -88,36 +87,50 @@ UAttributeSet* AGASP_PlayerCharacter::GetAttributeSet() const
 {
 	const AGASP_PlayerState* GASPPlayerState = Cast<AGASP_PlayerState>(GetPlayerState());
 	if (!IsValid(GASPPlayerState)) return nullptr;
-	
+
 	return GASPPlayerState->GetAttributeSet();
-	
 }
 
 void AGASP_PlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	
+
 	//Initiating GAS on Server
 	if (!IsValid(GetAbilitySystemComponent()) || !HasAuthority()) return;
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
 	GiveStartupAbilities();
 	InitializeAttributes();
-	
+
 	//tell UI that ASC and AttributeSet are initialized
-	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet()); 
+	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
+
+	//tell BaseCharacter every time health Attribute changed
+	UGASP_AttributeSet* GASPAttributeSet = Cast<UGASP_AttributeSet>(GetAttributeSet());
+	if (!IsValid(GASPAttributeSet)) return;
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(GASPAttributeSet->GetHealthAttribute()).
+	                             AddUObject(this, &ThisClass::OnHealthChanged);
 }
 
 void AGASP_PlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	
+
 	//Initiating GAS on Client
 	if (!IsValid(GetAbilitySystemComponent())) return;
 	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
-	
+
 	//tell UI that ASC and AttributeSet are initialized
 	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
+	
+	
+	//tell BaseCharacter every time health Attribute changed
+	UGASP_AttributeSet* GASPAttributeSet = Cast<UGASP_AttributeSet>(GetAttributeSet());
+	if (!IsValid(GASPAttributeSet)) return;
+	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(GASPAttributeSet->GetHealthAttribute()).
+								 AddUObject(this, &ThisClass::OnHealthChanged);
+	
 }
+
 
 
 void AGASP_PlayerCharacter::BeginPlay()

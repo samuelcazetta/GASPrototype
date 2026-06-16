@@ -5,6 +5,7 @@ namespace GASPTags
 	namespace States
 	{
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Intangible, "GASPTags.States.Intangible", "Tag for no damage interaction State");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Dead, "GASPTags.States.Dead", "Tag for dead State");
 		
 		namespace ComboReady
 		{

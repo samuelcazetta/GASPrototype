@@ -5,6 +5,7 @@ namespace GASPTags
 	namespace Events
 	{
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(HitReact, "GASPTags.Events.HitReact", "Tag for Hit React Event");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Death, "GASPTags.Events.Death", "Tag for Death Event"); 
 		
 		namespace Attack
 		{

@@ -7,6 +7,7 @@ namespace GASPTags
 	namespace States
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Intangible); // for collision on but no damage
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Dead);
 		
 		namespace ComboReady
 		{

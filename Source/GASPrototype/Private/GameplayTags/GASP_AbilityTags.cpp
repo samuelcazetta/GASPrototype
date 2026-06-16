@@ -12,6 +12,7 @@ namespace GASPTags
 		
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(ActivateOnGiven, "GASPTags.Abilities.ActivateOnGiven", "Tag for Abilities that are activated on given");
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(HitReact, "GASPTags.Abilities.HitReact", "Tag for Hit React Abilities");
+		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Death, "GASPTags.Abilities.Death", "Tag for Death Abilities");
 		
 		namespace Cooldown
 		{

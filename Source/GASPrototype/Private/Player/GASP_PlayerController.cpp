@@ -87,8 +87,6 @@ void AGASP_PlayerController::Move(const FInputActionValue& Value)
 
 void AGASP_PlayerController::Look(const FInputActionValue& Value)
 {
-	if (!IsAlive()) return;
-
 	const FVector2d LookVector = Value.Get<FVector2D>();
 	AddYawInput(LookVector.X);
 	AddPitchInput(LookVector.Y);

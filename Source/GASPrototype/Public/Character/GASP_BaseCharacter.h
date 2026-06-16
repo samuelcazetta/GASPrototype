@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GASP_BaseCharacter.generated.h"
 
+struct FOnAttributeChangeData;
 class UAttributeSet;
 class UGameplayEffect;
 class UGameplayAbility;
@@ -60,12 +61,18 @@ public:
 	bool IsMovementBlocked() const;
 	bool IsTangible() const;
 	bool IsAlive() const;
+	
+	UFUNCTION(BlueprintCallable, Category = "GASP|Death")
+	void ResetAttributes();
 
 protected:
 	//virtual void BeginPlay() override;
 
 	void GiveStartupAbilities();
 	void InitializeAttributes();
+	
+	void OnHealthChanged(const FOnAttributeChangeData& AttributeChangeData);
+	virtual void HandleDeath();
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "GASP|Abilities")

@@ -48,6 +48,25 @@ void AGASP_BaseCharacter::InitializeAttributes()
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
 }
 
+void AGASP_BaseCharacter::OnHealthChanged(const FOnAttributeChangeData& AttributeChangeData)
+{
+	if (AttributeChangeData.NewValue <= 0.f)
+	{
+		HandleDeath();
+	}
+}
+
+void AGASP_BaseCharacter::HandleDeath()
+{
+	UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
+	if (!IsValid(AbilitySystemComponent)) return;
+	
+	FGameplayEventData Payload;
+	//can insert any extra info here in Payload if necessary
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, GASPTags::Events::Death, Payload);
+	
+}
+
 void AGASP_BaseCharacter::ActivateAbility(const FGameplayTag& PrimaryTag,
                                           const FGameplayTag& SecondaryTag)
 {
@@ -97,11 +116,13 @@ bool AGASP_BaseCharacter::IsTangible() const
 
 bool AGASP_BaseCharacter::IsAlive() const
 {
-	return true;
-	/*
 	const UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
 	if (!IsValid(AbilitySystemComponent)) return false;
+	
+	return !AbilitySystemComponent->HasMatchingGameplayTag(GASPTags::States::Dead);
+}
 
-	return AbilitySystemComponent->GetNumericAttribute(UGASP_AttributeSet::GetHealthAttribute()) > 0.0f;
-	*/
+void AGASP_BaseCharacter::ResetAttributes()
+{
+	InitializeAttributes();
 }

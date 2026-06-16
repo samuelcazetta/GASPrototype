@@ -7,6 +7,7 @@ namespace GASPTags
 	namespace Events
 	{
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN (HitReact);
+		UE_DECLARE_GAMEPLAY_TAG_EXTERN (Death);
 		
 		namespace Attack
 		{
