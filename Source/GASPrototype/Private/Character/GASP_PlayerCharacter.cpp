@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/GASP_AttributeSet.h"
 #include "Camera/CameraComponent.h"
+#include "Components/PostProcessComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Player/GASP_PlayerState.h"
@@ -16,7 +17,7 @@ AGASP_PlayerCharacter::AGASP_PlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
+	
 	//SpringArm
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmComponent->SetupAttachment(RootComponent);
@@ -27,6 +28,11 @@ AGASP_PlayerCharacter::AGASP_PlayerCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 	CameraComponent->bUsePawnControlRotation = false;
+	
+	//PostProcessComponent
+	PostProcessComponent = CreateDefaultSubobject<UPostProcessComponent>(TEXT("PostProcessComponent"));
+	PostProcessComponent->SetupAttachment(RootComponent);
+	PostProcessComponent->BlendWeight = 0.f;
 
 	//Character
 	bUseControllerRotationPitch = false;
@@ -131,6 +137,11 @@ void AGASP_PlayerCharacter::OnRep_PlayerState()
 	
 }
 
+UPostProcessComponent* AGASP_PlayerCharacter::GetPostProcessComponent() const
+{
+	if (!IsValid(PostProcessComponent)) return nullptr;
+	return PostProcessComponent; 
+}
 
 
 void AGASP_PlayerCharacter::BeginPlay()

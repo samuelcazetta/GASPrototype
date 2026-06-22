@@ -25,7 +25,7 @@ protected:
 	float ExtendedSocketDistance {90.f};
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	float SphereRadius {25.f};
+	float CapsuleRadius {25.f};
 	
 	TArray<FHitResult> PerformSphereTrace(const USkeletalMeshComponent* MeshComp) const;  
 };

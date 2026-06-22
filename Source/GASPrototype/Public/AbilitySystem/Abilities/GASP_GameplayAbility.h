@@ -13,7 +13,6 @@ UCLASS()
 class GASPROTOTYPE_API UGASP_GameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
-	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GASP|Abilities")
 	bool bAbilityEnabled = true;

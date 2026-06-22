@@ -2,3 +2,41 @@
 
 
 #include "AbilitySystem/Abilities/GASP_Attack.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "Character/GASP_BaseCharacter.h"
+#include "GameplayTags/GASP_EventTags.h"
+
+void UGASP_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+                                   const FGameplayAbilityActivationInfo ActivationInfo,
+                                   const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	if (HitActors.Num() > 0) HitActors.Empty();
+}
+
+// sends Hit React event and applies damage GE to hit actors.
+void UGASP_Attack::SendHitReactEventAndApplyDamage(const FGameplayEventData& Payload,
+                                                   const TSubclassOf<UGameplayEffect> DamageGE,
+                                                   bool bOncePerTarget)
+{
+	if (bOncePerTarget)
+	{
+		if (HitActors.Contains(Payload.Target)) return;
+		HitActors.Add(Payload.Target);
+	}
+
+	// sending hit react event
+	UAbilitySystemComponent* TargetASC = Cast<AGASP_BaseCharacter>(Payload.Target)->GetAbilitySystemComponent();
+	if (!IsValid(TargetASC)) return;
+	const FGameplayTag& EventTag = GASPTags::Events::HitReact;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetASC->GetOwner(), EventTag, Payload);
+
+	// sending damage GE
+	const UAbilitySystemComponent* AvatarASC = GetAbilitySystemComponentFromActorInfo();
+	if (!IsValid(AvatarASC)) return;
+	const FGameplayEffectSpecHandle SpecHandle = AvatarASC->MakeOutgoingSpec(
+		DamageGE, 1.f, AvatarASC->MakeEffectContext());
+	TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+}

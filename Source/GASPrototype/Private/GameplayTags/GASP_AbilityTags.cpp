@@ -17,6 +17,7 @@ namespace GASPTags
 		namespace Cooldown
 		{
 			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Dash, "GASPTags.Abilities.Cooldown.Dash", "Tag for Dash Cooldown GE");
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Special, "GASPTags.Abilities.Cooldown.Special", "Tag for Special Attack Cooldown GE");
 		}
 		
 	}

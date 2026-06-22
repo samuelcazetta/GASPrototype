@@ -20,6 +20,7 @@ namespace GASPTags
 		namespace Cooldown
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Dash);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Special);
 		}
 	}
 }

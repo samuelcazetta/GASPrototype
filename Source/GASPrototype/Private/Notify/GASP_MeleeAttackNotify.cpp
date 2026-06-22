@@ -14,7 +14,7 @@ void UGASP_MeleeAttackNotify::NotifyTick(USkeletalMeshComponent* MeshComp, UAnim
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 	if (!IsValid(MeshComp) || !IsValid(MeshComp->GetOwner())) return;
 
-	// sphere trace
+	// capsule trace
 	const TArray<FHitResult> HitResults = PerformSphereTrace(MeshComp);
 	
 	
@@ -35,9 +35,9 @@ TArray<FHitResult> UGASP_MeleeAttackNotify::PerformSphereTrace(const USkeletalMe
 	
 	TArray<FHitResult> HitResults;
 	
-	// sphere trace
+	// capsule trace
 	EDrawDebugTrace::Type Debug = bEnableDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
-	UKismetSystemLibrary::SphereTraceMulti(MeshComp, TraceStart, TraceEnd, SphereRadius,
+	UKismetSystemLibrary::SphereTraceMulti(MeshComp, TraceStart, TraceEnd, CapsuleRadius,
 	                                       UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1),
 	                                       false, TArray<AActor*>(), Debug, HitResults, true,
 	                                       FLinearColor::Red, FLinearColor::Green, 0.3f);

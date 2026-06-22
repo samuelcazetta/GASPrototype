@@ -6,6 +6,7 @@
 #include "GASP_BaseCharacter.h"
 #include "GASP_PlayerCharacter.generated.h"
 
+class UPostProcessComponent;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -21,6 +22,9 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+	
+	UFUNCTION(BlueprintCallable)
+	UPostProcessComponent* GetPostProcessComponent() const;
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -28,9 +32,12 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<UPostProcessComponent> PostProcessComponent;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:
+	
+	
 };

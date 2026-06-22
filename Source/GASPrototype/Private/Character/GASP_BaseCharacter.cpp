@@ -18,6 +18,10 @@ AGASP_BaseCharacter::AGASP_BaseCharacter()
 
 	// Forces bone updates even when not rendered (required for correct replication on dedicated servers).
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	
+	// little detail used to highlight character when Special Ability is cast.
+	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->SetCustomDepthStencilValue(1);
 }
 
 UAbilitySystemComponent* AGASP_BaseCharacter::GetAbilitySystemComponent() const
