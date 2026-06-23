@@ -55,7 +55,7 @@ EHitDirection UGASP_BlueprintFunctionLibrary::GetHitDirection(const FVector& Tar
 
 	return EHitDirection::Front;
 }
- 
+  
 FName UGASP_BlueprintFunctionLibrary::GetHitDirectionName(const EHitDirection& EHitDirection)
 {
 	switch (EHitDirection)
