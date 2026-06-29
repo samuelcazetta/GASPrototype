@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "GASP_BlueprintFunctionLibrary.generated.h"
 
+class AGASP_BaseCharacter;
 struct FGameplayEventData;
 struct FGameplayTag;
 class USkeletalMeshComponent;
@@ -28,11 +29,18 @@ public:
 	static void SendEventsToActor(TArray<FHitResult> HitResults, const USkeletalMeshComponent* MeshComp,
 	                              const FGameplayTag& EventTag);
 	
+	UFUNCTION(BlueprintCallable, Category = "GASP|Utility")
+	static bool IsFacingDirection(const FVector& Forward, const FVector& TargetDirection, float Threshold = -0.5f);
+
 	UFUNCTION(BlueprintPure, Category = "GASP|Utility")
 	static EHitDirection GetHitDirection(const FVector& TargetForward, const FVector& ToInstigator);
 	
 	UFUNCTION(BlueprintPure, Category = "GASP|Utility")
 	static FName GetHitDirectionName(const EHitDirection& EHitDirection);
+	
+	UFUNCTION(BlueprintCallable, Category = "GASP|Utility")
+	static TArray<AGASP_BaseCharacter*> FindCharactersInRange(AActor* Origin, float Radius = 100.f);
+	
 	
 	//todo: rotate towards target
 };

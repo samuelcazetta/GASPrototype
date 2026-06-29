@@ -12,6 +12,8 @@ namespace GASPTags
 		namespace Attack
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN (MeleeTraceHit);
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN (Projectile);
+			
 		}
 		namespace Combo
 		{

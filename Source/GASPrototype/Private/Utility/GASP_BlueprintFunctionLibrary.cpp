@@ -5,8 +5,11 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Character/GASP_BaseCharacter.h"
+#include "Engine/OverlapResult.h"
 
-void UGASP_BlueprintFunctionLibrary::SendEventsToActor(TArray<FHitResult> HitResults, const USkeletalMeshComponent* MeshComp, const FGameplayTag& EventTag)
+void UGASP_BlueprintFunctionLibrary::SendEventsToActor(TArray<FHitResult> HitResults,
+                                                       const USkeletalMeshComponent* MeshComp,
+                                                       const FGameplayTag& EventTag)
 {
 	for (auto Hit : HitResults)
 	{
@@ -15,21 +18,19 @@ void UGASP_BlueprintFunctionLibrary::SendEventsToActor(TArray<FHitResult> HitRes
 		if (!IsValid(TargetCharacter) || !TargetCharacter->IsAlive() || !TargetCharacter->IsTangible()) continue;
 		UAbilitySystemComponent* AbilitySystemComponent = TargetCharacter->GetAbilitySystemComponent();
 		if (!IsValid(AbilitySystemComponent)) continue;
-		
+
 		// context handle with Hit Result
 		FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
 		ContextHandle.AddHitResult(Hit);
-		
+
 		// payload
 		FGameplayEventData Payload;
 		Payload.Target = TargetCharacter;
 		Payload.ContextHandle = ContextHandle;
 		Payload.Instigator = MeshComp->GetOwner();
-		
+
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), EventTag, Payload);
-		
 	}
-	
 }
 
 EHitDirection UGASP_BlueprintFunctionLibrary::GetHitDirection(const FVector& TargetForward, const FVector& ToInstigator)
@@ -55,7 +56,7 @@ EHitDirection UGASP_BlueprintFunctionLibrary::GetHitDirection(const FVector& Tar
 
 	return EHitDirection::Front;
 }
-  
+
 FName UGASP_BlueprintFunctionLibrary::GetHitDirectionName(const EHitDirection& EHitDirection)
 {
 	switch (EHitDirection)
@@ -66,4 +67,39 @@ FName UGASP_BlueprintFunctionLibrary::GetHitDirectionName(const EHitDirection& E
 	case EHitDirection::Front: return FName("Front");
 	default: return FName("None");
 	}
+}
+
+TArray<AGASP_BaseCharacter*> UGASP_BlueprintFunctionLibrary::FindCharactersInRange(AActor* Origin, const float Radius)
+{
+	if (Origin == nullptr) return {};
+	const UWorld* World = Origin->GetWorld();
+	if (World == nullptr) return {};
+	
+	TArray<FOverlapResult> OutOverlaps;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(Origin);
+	World->OverlapMultiByObjectType(OutOverlaps, Origin->GetActorLocation(), FQuat::Identity, FCollisionObjectQueryParams(ECC_Pawn),
+	                                FCollisionShape::MakeSphere(Radius),Params);
+
+	TArray<AGASP_BaseCharacter*> Characters;
+	for (const FOverlapResult& Overlap : OutOverlaps)
+	{
+		AGASP_BaseCharacter* Character = Cast<AGASP_BaseCharacter>(Overlap.GetActor());
+		if (!IsValid(Character))continue;
+		Characters.AddUnique(Character);
+	}
+
+	return Characters;
+}
+
+bool UGASP_BlueprintFunctionLibrary::IsFacingDirection(const FVector& Forward,
+													   const FVector& TargetDirection, const float Threshold)
+{
+	// Threshold -0.5 = 120º angle
+
+	const float Dot = FVector::DotProduct(
+		Forward.GetSafeNormal2D(),
+		TargetDirection.GetSafeNormal2D());
+
+	return Dot >= Threshold;
 }
