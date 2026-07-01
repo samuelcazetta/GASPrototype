@@ -41,6 +41,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GASP|Utility")
 	static TArray<AGASP_BaseCharacter*> FindCharactersInRange(AActor* Origin, float Radius = 100.f);
 	
+	UFUNCTION(BlueprintCallable, Category = "GASP|Utility", meta = (WorldContext = "WorldContextObject"))
+	static TArray<AActor*> ApplyKnockback(UObject* WorldContextObject, AActor* AvatarActor, const TArray<AActor*>& HitActors,
+													 float InnerRadius,
+													 float OuterRadius, float LaunchForceMagnitude, float RotationAngle,
+													 bool bDrawnDebug);
+	
 	
 	//todo: rotate towards target
 };

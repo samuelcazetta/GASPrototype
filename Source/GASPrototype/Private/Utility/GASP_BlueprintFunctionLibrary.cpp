@@ -92,8 +92,82 @@ TArray<AGASP_BaseCharacter*> UGASP_BlueprintFunctionLibrary::FindCharactersInRan
 	return Characters;
 }
 
+TArray<AActor*> UGASP_BlueprintFunctionLibrary::ApplyKnockback(UObject* WorldContextObject, AActor* AvatarActor, const TArray<AActor*>& HitActors,
+	float InnerRadius, float OuterRadius, float LaunchForceMagnitude, float RotationAngle, bool bDrawnDebug)
+{
+	for (auto HitActor : HitActors)
+	{
+		ACharacter* HitCharacter = Cast<ACharacter>(HitActor);
+		if (!IsValid(HitCharacter) || !IsValid(AvatarActor)) return TArray<AActor*>();
+
+		// Get each one position
+		const FVector HitCharacterLocation = HitCharacter->GetActorLocation();
+		const FVector AvatarLocation = AvatarActor->GetActorLocation();
+
+		// Calculates the direction of who push towards whom get pushed (nock direction)
+		const FVector ToHitActor = HitCharacterLocation - AvatarLocation;
+
+		// dist between the two
+		const float Distance = FVector::Dist(AvatarLocation, HitCharacterLocation);
+
+		float LaunchForce = 0.f;
+		if (Distance > OuterRadius) continue; // If character is too far, doesn't launch
+		if (Distance <= InnerRadius)
+		{
+			// max push
+			LaunchForce = LaunchForceMagnitude;
+		}
+		else
+		{
+			// less push in between
+			const FVector2D FalloffRange(InnerRadius, OuterRadius);
+			const FVector2D LaunchForceRanged(LaunchForceMagnitude, 0.f);
+			LaunchForce = FMath::GetMappedRangeValueClamped(FalloffRange, LaunchForceRanged, Distance);
+		}
+
+		if (bDrawnDebug)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
+			                                 FString::Printf(TEXT("LaunchForce: %f"), LaunchForce));
+		}
+
+		// push direction
+		FVector KnockbackForce = ToHitActor.GetSafeNormal();
+		// ignores z
+		KnockbackForce.Z = 0.f;
+
+		// Calculate the "to the right" vector of the push (90 degrees on the ground), like rotating a ruler.
+		const FVector Right = KnockbackForce.RotateAngleAxis(90.f, FVector::UpVector);
+
+		// Rotates the push by RotationAngle around the right axis: this tilts the vector
+		// upwards, causing the character to fly in an arc instead of just sliding along the ground.
+		KnockbackForce = KnockbackForce.RotateAngleAxis(-RotationAngle, Right) * LaunchForce;
+
+		if (bDrawnDebug)
+		{
+			DrawDebugDirectionalArrow(AvatarActor->GetWorld(), HitCharacterLocation,
+			                          HitCharacterLocation + KnockbackForce, 100.f, FColor::Red, false, 1.f, 0, 1.f);
+		}
+
+		//todo: Prevents the EnemyCharacter from continuing to move until it lands
+		/*
+		if (AGAS_EnemyCharacter* EnemyCharacter = Cast<AGAS_EnemyCharacter>(HitCharacter); IsValid(EnemyCharacter))
+		{
+			EnemyCharacter->StopMovementUntilLanded();
+		}
+		*/
+		
+		// Launch
+		HitCharacter->LaunchCharacter(KnockbackForce, true, true);
+	}
+
+	// returns launched actors
+	return HitActors;
+}
+
+
 bool UGASP_BlueprintFunctionLibrary::IsFacingDirection(const FVector& Forward,
-													   const FVector& TargetDirection, const float Threshold)
+                                                       const FVector& TargetDirection, const float Threshold)
 {
 	// Threshold -0.5 = 120º angle
 
