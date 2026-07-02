@@ -25,6 +25,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(EditAnywhere, Category = "GASP|Attribute")
 	TMap<FGameplayAttribute, FGameplayAttribute> AttributeMap;
@@ -33,12 +34,15 @@ private:
 	TWeakObjectPtr<AGASP_BaseCharacter> BaseCharacter;
 	TWeakObjectPtr<UGASP_AbilitySystemComponent> AbilitySystemComponent;
 	TWeakObjectPtr<UGASP_AttributeSet> AttributeSet;
+	TArray<TPair<FGameplayAttribute, FDelegateHandle>> AttributeChangeDelegateHandles;
+	bool bAttributeDelegatesBound = false;
 
 	void InitializeAbilitySystemData();
 	bool IsASCInitialized() const;
 	void InitializeAttributeDelegate();
 	void BindWidgetsToAttributeChanges(UWidget* WidgetObject,
-	                                   const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair) const;
+	                                   const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair);
+	void ClearAttributeChangeDelegates();
 
 	UFUNCTION()
 	void OnASCInitialized(UAbilitySystemComponent* ASC, UAttributeSet* AttributeSet);

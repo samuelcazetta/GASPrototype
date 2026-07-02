@@ -20,20 +20,42 @@ void UGASP_WidgetComponent::BeginPlay()
 	Super::BeginPlay();
 
 	InitializeAbilitySystemData();
+	if (!BaseCharacter.IsValid()) return;
+
 	if (!IsASCInitialized())
 	{
 		// ASC may not be ready yet on clients; defer until BaseCharacter signals initialization
-		BaseCharacter->OnASCInitialized.AddDynamic(this, &ThisClass::OnASCInitialized);
+		BaseCharacter->OnASCInitialized.AddUniqueDynamic(this, &ThisClass::OnASCInitialized);
 		return;
 	}
 
 	InitializeAttributeDelegate();
 }
 
+void UGASP_WidgetComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	// Unbind delegates before this WidgetComponent/Widget is destroyed
+	ClearAttributeChangeDelegates();
+
+	if (AttributeSet.IsValid())
+	{
+		AttributeSet->OnAttributesInitialized.RemoveDynamic(this, &ThisClass::BindToAttributeChanges);
+	}
+
+	if (BaseCharacter.IsValid())
+	{
+		BaseCharacter->OnASCInitialized.RemoveDynamic(this, &ThisClass::OnASCInitialized);
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
 void UGASP_WidgetComponent::InitializeAbilitySystemData()
 {
 	// Attempt early initialization; may return null if ASC not yet ready
 	BaseCharacter = Cast<AGASP_BaseCharacter>(GetOwner());
+	if (!BaseCharacter.IsValid()) return;
+
 	AbilitySystemComponent = Cast<UGASP_AbilitySystemComponent>(BaseCharacter->GetAbilitySystemComponent());
 	AttributeSet = Cast<UGASP_AttributeSet>(BaseCharacter->GetAttributeSet());
 }
@@ -48,7 +70,7 @@ void UGASP_WidgetComponent::InitializeAttributeDelegate()
 	if (!AttributeSet->bAttributesInitialized)
 	{
 		// Attributes are populated by the first GE application; wait for that before binding
-		AttributeSet->OnAttributesInitialized.AddDynamic(this, &ThisClass::BindToAttributeChanges);
+		AttributeSet->OnAttributesInitialized.AddUniqueDynamic(this, &ThisClass::BindToAttributeChanges);
 	}
 	else
 	{
@@ -69,21 +91,29 @@ void UGASP_WidgetComponent::OnASCInitialized(UAbilitySystemComponent* ASC, UAttr
 
 void UGASP_WidgetComponent::BindToAttributeChanges()
 {
+	// Avoid binding more than once; OnASCInitialized and OnAttributesInitialized may both call this
+	if (bAttributeDelegatesBound) return;
+	if (!IsASCInitialized() || !IsValid(GetUserWidgetObject())) return;
+
 	for (const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair : AttributeMap)
 	{
 		// Bind the root widget and all child widgets that match this attribute pair
 		BindWidgetsToAttributeChanges(GetUserWidgetObject(), Pair);
 
-		GetUserWidgetObject()->WidgetTree->ForEachWidget([this, &Pair](UWidget* ChildWidget)
+		// WidgetTree can be null if the WidgetComponent has no widget instance yet
+		if (!IsValid(GetUserWidgetObject()->WidgetTree)) continue;
+
+		GetUserWidgetObject()->WidgetTree->ForEachWidget([this, Pair](UWidget* ChildWidget)
 		{
 			BindWidgetsToAttributeChanges(ChildWidget, Pair);
 		});
 	}
+
+	bAttributeDelegatesBound = true;
 }
 
 void UGASP_WidgetComponent::BindWidgetsToAttributeChanges(UWidget* WidgetObject,
                                                           const TTuple<FGameplayAttribute, FGameplayAttribute>& Pair)
-const
 {
 	UGASP_AttributeWidget* AttributeWidget = Cast<UGASP_AttributeWidget>(WidgetObject);
 	if (!IsValid(AttributeWidget)) return;
@@ -94,9 +124,30 @@ const
 	AttributeWidget->OnAttributeChanged(Pair, AttributeSet.Get(), 0.0f);
 
 	// Register a delegate to keep the widget in sync on every subsequent change
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Key).AddLambda
-	([this, AttributeWidget, &Pair](const FOnAttributeChangeData& AttributeChangeData)
+	// Weak refs protect against callbacks fired by the PlayerState ASC after character switch
+	const TWeakObjectPtr AttributeWidgetWeak = AttributeWidget;
+	const TWeakObjectPtr<UGASP_AttributeSet> AttributeSetWeak = AttributeSet;
+	const FDelegateHandle DelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Key).AddLambda
+	([AttributeWidgetWeak, AttributeSetWeak, Pair](const FOnAttributeChangeData& AttributeChangeData)
 	{
-		AttributeWidget->OnAttributeChanged(Pair, AttributeSet.Get(), AttributeChangeData.OldValue);
+		if (!AttributeWidgetWeak.IsValid() || !AttributeSetWeak.IsValid()) return;
+		AttributeWidgetWeak->OnAttributeChanged(Pair, AttributeSetWeak.Get(), AttributeChangeData.OldValue);
 	});
+	AttributeChangeDelegateHandles.Emplace(Pair.Key, DelegateHandle);
+}
+
+void UGASP_WidgetComponent::ClearAttributeChangeDelegates()
+{
+	// Attribute delegates live on the ASC, which can outlive this pawn because it belongs to PlayerState
+	if (AbilitySystemComponent.IsValid())
+	{
+		for (const TPair<FGameplayAttribute, FDelegateHandle>& AttributeChangeDelegateHandle : AttributeChangeDelegateHandles)
+		{
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeChangeDelegateHandle.Key).
+				Remove(AttributeChangeDelegateHandle.Value);
+		}
+	}
+
+	AttributeChangeDelegateHandles.Reset();
+	bAttributeDelegatesBound = false;
 }
