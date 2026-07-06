@@ -12,9 +12,14 @@ public class GASPrototype : ModuleRules
 		{
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
 
-			"UMG",
+			//UI
+			"UMG", 
 
-			"GameplayAbilities", "GameplayTags", "GameplayTasks"
+			//GAS
+			"GameplayAbilities", "GameplayTags", "GameplayTasks", 
+			
+			//AI
+			"AIModule",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
