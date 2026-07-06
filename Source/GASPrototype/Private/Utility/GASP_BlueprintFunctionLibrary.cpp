@@ -4,6 +4,7 @@
 #include "Utility/GASP_BlueprintFunctionLibrary.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "KismetTraceUtils.h"
 #include "Character/GASP_BaseCharacter.h"
 #include "Engine/OverlapResult.h"
 
@@ -69,31 +70,29 @@ FName UGASP_BlueprintFunctionLibrary::GetHitDirectionName(const EHitDirection& E
 	}
 }
 
-TArray<AGASP_BaseCharacter*> UGASP_BlueprintFunctionLibrary::FindCharactersInRange(AActor* Origin, const float Radius)
+TArray<FHitResult> UGASP_BlueprintFunctionLibrary::FindCharactersInRange(
+	AActor* Instigator, const FVector& Origin, const float Radius, bool bDrawDebug)
 {
-	if (Origin == nullptr) return {};
-	const UWorld* World = Origin->GetWorld();
+	if (Instigator == nullptr) return {};
+	const UWorld* World = Instigator->GetWorld();
 	if (World == nullptr) return {};
+
+	TArray<FHitResult> HitResults;
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(Instigator);
+	UKismetSystemLibrary::SphereTraceMulti(World, Origin, Origin, Radius, UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), false,
+	                                       ActorsToIgnore, bDrawDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None,HitResults, true,
+	                                       FLinearColor::Red, FLinearColor::Green, 0.5f);
 	
-	TArray<FOverlapResult> OutOverlaps;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(Origin);
-	World->OverlapMultiByObjectType(OutOverlaps, Origin->GetActorLocation(), FQuat::Identity, FCollisionObjectQueryParams(ECC_Pawn),
-	                                FCollisionShape::MakeSphere(Radius),Params);
-
-	TArray<AGASP_BaseCharacter*> Characters;
-	for (const FOverlapResult& Overlap : OutOverlaps)
-	{
-		AGASP_BaseCharacter* Character = Cast<AGASP_BaseCharacter>(Overlap.GetActor());
-		if (!IsValid(Character))continue;
-		Characters.AddUnique(Character);
-	}
-
-	return Characters;
+	if (HitResults.Num() == 0) return {};
+	return HitResults;
 }
 
-TArray<AActor*> UGASP_BlueprintFunctionLibrary::ApplyKnockback(UObject* WorldContextObject, AActor* AvatarActor, const TArray<AActor*>& HitActors,
-	float InnerRadius, float OuterRadius, float LaunchForceMagnitude, float RotationAngle, bool bDrawnDebug)
+TArray<AActor*> UGASP_BlueprintFunctionLibrary::ApplyKnockback(UObject* WorldContextObject, AActor* AvatarActor,
+                                                               const TArray<AActor*>& HitActors,
+                                                               float InnerRadius, float OuterRadius,
+                                                               float LaunchForceMagnitude, float RotationAngle,
+                                                               bool bDrawnDebug)
 {
 	for (auto HitActor : HitActors)
 	{
@@ -156,7 +155,7 @@ TArray<AActor*> UGASP_BlueprintFunctionLibrary::ApplyKnockback(UObject* WorldCon
 			EnemyCharacter->StopMovementUntilLanded();
 		}
 		*/
-		
+
 		// Launch
 		HitCharacter->LaunchCharacter(KnockbackForce, true, true);
 	}

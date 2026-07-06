@@ -21,6 +21,8 @@ void UGASP_Attack::SendHitReactEventAndApplyDamage(const FGameplayEventData& Pay
                                                    const TSubclassOf<UGameplayEffect> DamageGE,
                                                    bool bOncePerTarget)
 {
+	if (!IsValid(Payload.Target)) return;
+	
 	if (bOncePerTarget)
 	{
 		if (HitActors.Contains(Payload.Target)) return;
@@ -37,6 +39,6 @@ void UGASP_Attack::SendHitReactEventAndApplyDamage(const FGameplayEventData& Pay
 	const UAbilitySystemComponent* AvatarASC = GetAbilitySystemComponentFromActorInfo();
 	if (!IsValid(AvatarASC)) return;
 	const FGameplayEffectSpecHandle SpecHandle = AvatarASC->MakeOutgoingSpec(
-		DamageGE, 1.f, AvatarASC->MakeEffectContext());
+		DamageGE, 1.f, Payload.ContextHandle);
 	TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }

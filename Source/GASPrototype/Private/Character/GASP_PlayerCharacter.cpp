@@ -143,6 +143,8 @@ UPostProcessComponent* AGASP_PlayerCharacter::GetPostProcessComponent() const
 	return PostProcessComponent; 
 }
 
+void AGASP_PlayerCharacter::SpecialAttackFade_Implementation(bool bIsFadeIn){}
+
 
 void AGASP_PlayerCharacter::BeginPlay()
 {

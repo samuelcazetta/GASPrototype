@@ -11,10 +11,12 @@ AGASP_BaseCharacter* UGASP_RangedAttack::FindBestTarget(const float DotThreshold
 {
 	AActor* Owner = GetAvatarActorFromActorInfo();
 	if (!IsValid(Owner)) return nullptr;
+	FVector Location = Owner->GetActorLocation();
 
-	TArray<AGASP_BaseCharacter*> Candidates = UGASP_BlueprintFunctionLibrary::FindCharactersInRange(
-		Owner, SearchRange);
-	if (Candidates.IsEmpty()) return nullptr;
+	TArray<FHitResult> HitResults = UGASP_BlueprintFunctionLibrary::FindCharactersInRange(
+		Owner, Location, SearchRange);
+	
+	if (HitResults.IsEmpty()) return nullptr;
 
 	const FVector OwnerLocation = Owner->GetActorLocation();
 	const FVector Forward = Owner->GetActorForwardVector().GetSafeNormal2D();
@@ -22,8 +24,9 @@ AGASP_BaseCharacter* UGASP_RangedAttack::FindBestTarget(const float DotThreshold
 	float BestDot = DotThreshold;  //  0.7f would be something like 45°
 	AGASP_BaseCharacter* BestTarget = nullptr;
 
-	for (AGASP_BaseCharacter* Candidate : Candidates)
+	for (auto Hit : HitResults)
 	{
+		AGASP_BaseCharacter* Candidate = Cast<AGASP_BaseCharacter>(Hit.GetActor());
 		if (!IsValid(Candidate) || !Candidate->IsAlive()) continue;
 
 		const FVector Direction = (Candidate->GetActorLocation() - OwnerLocation).GetSafeNormal2D();

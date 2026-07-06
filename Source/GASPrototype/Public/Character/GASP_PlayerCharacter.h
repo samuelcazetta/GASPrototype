@@ -25,6 +25,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	UPostProcessComponent* GetPostProcessComponent() const;
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SpecialAttackFade(bool bIsFadeIn);
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -35,7 +38,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UPostProcessComponent> PostProcessComponent;
-
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	

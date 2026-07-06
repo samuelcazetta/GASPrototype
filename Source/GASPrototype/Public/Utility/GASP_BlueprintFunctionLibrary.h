@@ -39,7 +39,8 @@ public:
 	static FName GetHitDirectionName(const EHitDirection& EHitDirection);
 	
 	UFUNCTION(BlueprintCallable, Category = "GASP|Utility")
-	static TArray<AGASP_BaseCharacter*> FindCharactersInRange(AActor* Origin, float Radius = 100.f);
+	static TArray<FHitResult> FindCharactersInRange(AActor* Instigator, const FVector& Origin, float Radius = 100.f,
+	                                                bool bDrawDebug = false);
 	
 	UFUNCTION(BlueprintCallable, Category = "GASP|Utility", meta = (WorldContext = "WorldContextObject"))
 	static TArray<AActor*> ApplyKnockback(UObject* WorldContextObject, AActor* AvatarActor, const TArray<AActor*>& HitActors,
