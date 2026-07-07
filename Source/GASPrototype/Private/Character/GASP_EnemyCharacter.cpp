@@ -40,13 +40,12 @@ void AGASP_EnemyCharacter::BeginPlay()
 	//defining ASC Owner and Avatar 
 	GetAbilitySystemComponent()->InitAbilityActorInfo(this, this);
 
-	// tell UI ASC and attributes are initialized
+	// tell UI that ASC and attributes are initialized
 	OnASCInitialized.Broadcast(GetAbilitySystemComponent(), GetAttributeSet());
 
-	// server only ↓
+	if (!HasAuthority()) return; // server only ↓
 
-	// startup abilities and attributes
-	if (!HasAuthority()) return;
+	// startup abilities and attributes 
 	GiveStartupAbilities();
 	InitializeAttributes();
 
@@ -54,6 +53,6 @@ void AGASP_EnemyCharacter::BeginPlay()
 	UGASP_AttributeSet* GAS_AttributeSet = Cast<UGASP_AttributeSet>(GetAttributeSet());
 	if (!IsValid(GAS_AttributeSet)) return;
 	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(GAS_AttributeSet->GetHealthAttribute()).
-	                             AddUObject
+	                             AddUObject 
 	                             (this, &ThisClass::OnHealthChanged);
 }
