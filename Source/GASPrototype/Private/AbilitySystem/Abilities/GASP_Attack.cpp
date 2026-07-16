@@ -13,7 +13,10 @@ void UGASP_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
                                    const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	if (HitActors.Num() > 0) HitActors.Empty();
+	
+	// used just for the send hit react event and aplly damage
+	if (HitActors.Num() > 0) 
+		HitActors.Empty();
 }
 
 // sends Hit React event and applies damage GE to hit actors.
