@@ -17,10 +17,20 @@ public:
 	AGASP_EnemyCharacter();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UAttributeSet* GetAttributeSet() const override;
+	
+	float GetLookAtRange() const {return LookAtRange;}
+	FVector GetStartLocation() const {return StartLocation;}
+	void SetStartLocation(const FVector& NewStartPosition);
+	
 
 protected:
 	virtual void BeginPlay() override;
-
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="GASP|AI|Setup")
+	FVector StartLocation{ 0, 0, 0 };
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="GASP|AI|Setup")
+	float LookAtRange{1200.f};
+	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UGASP_AbilitySystemComponent> AbilitySystemComponent;

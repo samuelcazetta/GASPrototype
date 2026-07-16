@@ -15,8 +15,13 @@ namespace GASPTags
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(ActivateOnGiven);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(HitReact);
 		UE_DECLARE_GAMEPLAY_TAG_EXTERN(Death);
-		
 
+		namespace Enemy
+		{
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attack)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(HealthRecover);
+		}
+		
 		namespace Cooldown
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Dash);

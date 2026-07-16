@@ -5,18 +5,26 @@
 
 #include "AbilitySystem/GASP_AbilitySystemComponent.h"
 #include "AbilitySystem/GASP_AttributeSet.h"
+#include "EntitySystem/MovieSceneEntitySystemRunner.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
 AGASP_EnemyCharacter::AGASP_EnemyCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	
+
 	AbilitySystemComponent = CreateDefaultSubobject<UGASP_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal); // remember, for npcs we use minimal
-	
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	// remember, for npcs we use minimal
+
 	AttributeSet = CreateDefaultSubobject<UGASP_AttributeSet>(TEXT("AttributeSet"));
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 }
 
 UAbilitySystemComponent* AGASP_EnemyCharacter::GetAbilitySystemComponent() const
@@ -29,6 +37,11 @@ UAttributeSet* AGASP_EnemyCharacter::GetAttributeSet() const
 {
 	if (!IsValid(AttributeSet)) return nullptr;
 	return AttributeSet;
+}
+
+void AGASP_EnemyCharacter::SetStartLocation(const FVector& NewStartPosition)
+{
+	StartLocation = NewStartPosition;
 }
 
 void AGASP_EnemyCharacter::BeginPlay()
@@ -53,6 +66,6 @@ void AGASP_EnemyCharacter::BeginPlay()
 	UGASP_AttributeSet* GAS_AttributeSet = Cast<UGASP_AttributeSet>(GetAttributeSet());
 	if (!IsValid(GAS_AttributeSet)) return;
 	GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(GAS_AttributeSet->GetHealthAttribute()).
-	                             AddUObject 
+	                             AddUObject
 	                             (this, &ThisClass::OnHealthChanged);
 }

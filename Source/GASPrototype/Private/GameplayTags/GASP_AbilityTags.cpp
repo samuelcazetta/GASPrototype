@@ -14,6 +14,12 @@ namespace GASPTags
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(HitReact, "GASPTags.Abilities.HitReact", "Tag for Hit React Abilities");
 		UE_DEFINE_GAMEPLAY_TAG_COMMENT(Death, "GASPTags.Abilities.Death", "Tag for Death Abilities");
 		
+		namespace Enemy
+		{
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attack, "GASPTags.Abilities.Enemy.Attack", "Tag for Enemy Attack Abilities")
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(HealthRecover, "GASPTags.Abilities.Enemy.HealthRecover", "Tag for Enemy Health Recover Ability")
+		}
+		
 		namespace Cooldown
 		{
 			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Dash, "GASPTags.Abilities.Cooldown.Dash", "Tag for Dash Cooldown GE");

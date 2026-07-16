@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/GASP_AttributeSet.h"
 
+#include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
 void UGASP_AttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -21,6 +22,16 @@ void UGASP_AttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProper
 void UGASP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+
+	// clamp to max health and mana if GE exceds max values
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+	}
+	if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		SetHealth(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+	}
 	
 	// Broadcast attribute initialization for UI
 	if (!bAttributesInitialized)
