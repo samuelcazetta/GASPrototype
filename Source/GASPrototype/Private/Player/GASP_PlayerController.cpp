@@ -113,5 +113,5 @@ void AGASP_PlayerController::Dash()
 
 bool AGASP_PlayerController::IsAlive() const
 {
-	return BaseCharacter->IsAlive();
+	return IsValid(BaseCharacter) && BaseCharacter->IsAlive();
 }

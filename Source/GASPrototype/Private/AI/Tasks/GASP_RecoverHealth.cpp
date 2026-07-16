@@ -16,11 +16,13 @@ EBTNodeResult::Type UGASP_RecoverHealth::ExecuteTask(UBehaviorTreeComponent& Own
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 		
-	AGASP_EnemyCharacter* AICharacter = Cast<AGASP_EnemyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
-	if (IsValid(AICharacter) || AICharacter->IsAlive())
-	{
-		AICharacter->ActivateAbility(GASPTags::Abilities::Enemy::HealthRecover);
-	}
+	const AAIController* AIController = OwnerComp.GetAIOwner();
+	if (!IsValid(AIController)) return EBTNodeResult::Failed;
+	
+	AGASP_EnemyCharacter* AICharacter = Cast<AGASP_EnemyCharacter>(AIController->GetPawn());
+	if (!IsValid(AICharacter) || !AICharacter->IsAlive()) return EBTNodeResult::Failed;
+	
+	AICharacter->ActivateAbility(GASPTags::Abilities::Enemy::HealthRecover);
 	
 	return EBTNodeResult::Succeeded;
 }

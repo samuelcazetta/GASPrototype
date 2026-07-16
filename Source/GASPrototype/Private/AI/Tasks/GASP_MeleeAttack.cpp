@@ -18,11 +18,13 @@ EBTNodeResult::Type UGASP_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& Owner
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 	
-	AGASP_EnemyCharacter* AICharacter = Cast<AGASP_EnemyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
-	if (IsValid(AICharacter) || AICharacter->IsAlive())
-	{
-		AICharacter->ActivateAbility(GASPTags::Abilities::Enemy::Attack);
-	}
+	const AAIController* AIController = OwnerComp.GetAIOwner();
+	if (!IsValid(AIController)) return EBTNodeResult::Failed;
+	
+	AGASP_EnemyCharacter* AICharacter = Cast<AGASP_EnemyCharacter>(AIController->GetPawn());
+	if (!IsValid(AICharacter) || !AICharacter->IsAlive()) return EBTNodeResult::Failed;
+	
+	AICharacter->ActivateAbility(GASPTags::Abilities::Enemy::Attack);
 	
 	return EBTNodeResult::Succeeded;
 }

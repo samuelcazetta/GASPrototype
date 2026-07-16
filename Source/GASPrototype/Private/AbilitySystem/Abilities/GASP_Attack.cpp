@@ -30,7 +30,10 @@ void UGASP_Attack::SendHitReactEventAndApplyDamage(const FGameplayEventData& Pay
 	}
 
 	// sending hit react event
-	UAbilitySystemComponent* TargetASC = Cast<AGASP_BaseCharacter>(Payload.Target)->GetAbilitySystemComponent();
+	const AGASP_BaseCharacter* TargetCharacter = Cast<AGASP_BaseCharacter>(Payload.Target);
+	if (!IsValid(TargetCharacter)) return;
+	
+	UAbilitySystemComponent* TargetASC = TargetCharacter->GetAbilitySystemComponent();
 	if (!IsValid(TargetASC)) return;
 	const FGameplayTag& EventTag = GASPTags::Events::HitReact;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetASC->GetOwner(), EventTag, Payload);
@@ -40,5 +43,6 @@ void UGASP_Attack::SendHitReactEventAndApplyDamage(const FGameplayEventData& Pay
 	if (!IsValid(AvatarASC)) return;
 	const FGameplayEffectSpecHandle SpecHandle = AvatarASC->MakeOutgoingSpec(
 		DamageGE, 1.f, Payload.ContextHandle);
+	if (!SpecHandle.IsValid()) return;
 	TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }

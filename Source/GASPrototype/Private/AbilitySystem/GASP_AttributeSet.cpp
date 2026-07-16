@@ -30,7 +30,7 @@ void UGASP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallb
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
-		SetHealth(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
 	
 	// Broadcast attribute initialization for UI

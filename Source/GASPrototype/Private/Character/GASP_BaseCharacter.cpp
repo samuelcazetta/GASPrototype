@@ -47,8 +47,10 @@ void AGASP_BaseCharacter::InitializeAttributes()
 {
 	if (!IsValid(InitialAttributesEffect)) return;
 	const FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	if (!ContextHandle.IsValid()) return;
 	const FGameplayEffectSpecHandle EffectSpec = GetAbilitySystemComponent()->MakeOutgoingSpec(
 		InitialAttributesEffect, 1.f, ContextHandle);
+	if (!EffectSpec.IsValid()) return;
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
 }
 

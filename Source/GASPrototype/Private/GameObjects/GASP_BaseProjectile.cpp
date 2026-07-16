@@ -41,6 +41,7 @@ void AGASP_BaseProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 	// Apply Damage
 	FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
 	FGameplayEffectSpecHandle EffectSpec = AbilitySystemComponent->MakeOutgoingSpec(DamageEffect, 1.f, ContextHandle);
+	if (!EffectSpec.IsValid()) return;
 	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
 	
 	// Hit React Event

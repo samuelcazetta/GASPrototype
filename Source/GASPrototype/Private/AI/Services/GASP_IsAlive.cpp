@@ -4,7 +4,6 @@
 #include "AI/Services/GASP_IsAlive.h"
 
 #include "AIController.h"
-#include "AssetTypeCategories.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/GASP_EnemyCharacter.h"
 
@@ -25,7 +24,7 @@ void UGASP_IsAlive::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 	if (!AICharacter->IsAlive())
 	{
 		AIController->StopMovement();
-		AIController->ClearFocus(EAssetTypeCategories::Gameplay);
+		AIController->ClearFocus(EAIFocusPriority::Gameplay);
 	}
 	
 	Blackboard->SetValueAsBool(GetSelectedBlackboardKey(), AICharacter->IsAlive());

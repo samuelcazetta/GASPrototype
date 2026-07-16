@@ -17,5 +17,5 @@ EBTNodeResult::Type UGASP_ClearBlackboardValue::ExecuteTask(UBehaviorTreeCompone
 	if (UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent(); IsValid(Blackboard)) Blackboard->
 		ClearValue(GetSelectedBlackboardKey());
 
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
+	return EBTNodeResult::Succeeded;
 }
