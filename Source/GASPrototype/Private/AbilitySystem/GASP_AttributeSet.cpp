@@ -9,13 +9,13 @@
 void UGASP_AttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
-	
+
+
 	DOREPLIFETIME_CONDITION_NOTIFY(UGASP_AttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGASP_AttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UGASP_AttributeSet, Mana, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UGASP_AttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
-	
+	DOREPLIFETIME_CONDITION_NOTIFY(UGASP_AttributeSet, Power, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGASP_AttributeSet, MaxPower, COND_None, REPNOTIFY_Always);
+
 	DOREPLIFETIME(ThisClass, bAttributesInitialized);
 }
 
@@ -28,11 +28,11 @@ void UGASP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallb
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
 	}
-	if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	if (Data.EvaluatedData.Attribute == GetPowerAttribute())
 	{
-		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+		SetPower(FMath::Clamp(GetPower(), 0.f, GetMaxPower()));
 	}
-	
+
 	// Broadcast attribute initialization for UI
 	if (!bAttributesInitialized)
 	{
@@ -52,7 +52,6 @@ void UGASP_AttributeSet::OnRep_AttributesInitialized()
 
 void UGASP_AttributeSet::OnRep_Health(const FGameplayAttributeData& OldValue)
 {
-	
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, Health, OldValue);
 }
 
@@ -61,12 +60,12 @@ void UGASP_AttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxHealth, OldValue);
 }
 
-void UGASP_AttributeSet::OnRep_Mana(const FGameplayAttributeData& OldValue)
+void UGASP_AttributeSet::OnRep_Power(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, Mana, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, Power, OldValue);
 }
 
-void UGASP_AttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue)
+void UGASP_AttributeSet::OnRep_MaxPower(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxMana, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ThisClass, MaxPower, OldValue);
 }

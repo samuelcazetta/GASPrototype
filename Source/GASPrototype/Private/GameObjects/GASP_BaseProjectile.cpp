@@ -38,20 +38,34 @@ void AGASP_BaseProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 	UAbilitySystemComponent* AbilitySystemComponent = BaseCharacter->GetAbilitySystemComponent();
 	if (!IsValid(AbilitySystemComponent) || !HasAuthority()) return;
 	
-	// Apply Damage
-	FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
-	FGameplayEffectSpecHandle EffectSpec = AbilitySystemComponent->MakeOutgoingSpec(DamageEffect, 1.f, ContextHandle);
-	if (!EffectSpec.IsValid()) return;
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
+	// Apply Damage GE
+	FGameplayEffectContextHandle DamageContextHandle = AbilitySystemComponent->MakeEffectContext();
+	FGameplayEffectSpecHandle DamageEffectSpec = AbilitySystemComponent->MakeOutgoingSpec(DamageEffect, 1.f, DamageContextHandle);
+	if (!DamageEffectSpec.IsValid()) return;
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DamageEffectSpec.Data.Get());
 	
 	// Hit React Event
 	FHitResult HitResult;
 	HitResult.ImpactPoint = GetActorLocation();
-	ContextHandle.AddHitResult(HitResult);
+	DamageContextHandle.AddHitResult(HitResult);
 	FGameplayEventData Payload;
 	Payload.Instigator = GetInstigator();
-	Payload.ContextHandle = ContextHandle;
+	Payload.ContextHandle = DamageContextHandle;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(BaseCharacter, GASPTags::Events::HitReact, Payload);
+	
+	// Apply Power Charge GE
+	if (IsValid(OnHitPowerChargeEffect))
+	{
+		const AGASP_PlayerCharacter* OwnerCharacter = Cast<AGASP_PlayerCharacter>(GetOwner());
+		if (!IsValid(OwnerCharacter)) return;
+		UAbilitySystemComponent* OwnerASC = OwnerCharacter->GetAbilitySystemComponent();
+		if (!IsValid(OwnerASC)) return;
+		
+		FGameplayEffectContextHandle PowerChargeContextHandle = OwnerASC->MakeEffectContext();
+		FGameplayEffectSpecHandle PowerChargeEffectSpec = OwnerASC->MakeOutgoingSpec(OnHitPowerChargeEffect, 1.f, PowerChargeContextHandle);
+		if (!PowerChargeEffectSpec.IsValid()) return;
+		OwnerASC->ApplyGameplayEffectSpecToSelf(*PowerChargeEffectSpec.Data.Get());
+	}
 	
 	Destroy();
 }

@@ -31,4 +31,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "GASP|Projectile")
 	TSubclassOf<UGameplayEffect> DamageEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "GASP|Projectile")
+	TSubclassOf<UGameplayEffect> OnHitPowerChargeEffect;
 };

@@ -29,11 +29,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
 	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana)
-	FGameplayAttributeData Mana;
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Power)
+	FGameplayAttributeData Power;
 	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana)
-	FGameplayAttributeData MaxMana;
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxPower)
+	FGameplayAttributeData MaxPower;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_AttributesInitialized)
 	bool bAttributesInitialized = false;
@@ -55,10 +55,10 @@ public:
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldValue);
 	
 	UFUNCTION()
-	void OnRep_Mana(const FGameplayAttributeData& OldValue);
+	void OnRep_Power(const FGameplayAttributeData& OldValue);
 	
 	UFUNCTION()
-	void OnRep_MaxMana(const FGameplayAttributeData& OldValue);
+	void OnRep_MaxPower(const FGameplayAttributeData& OldValue);
 	
 	UFUNCTION()
 	void OnRep_AttributesInitialized();
@@ -66,6 +66,6 @@ public:
 	// Auto-generates GetHealth(), SetHealth(), InitHealth(), etc.
 	ATTRIBUTE_ACCESSORS(ThisClass, Health);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
-	ATTRIBUTE_ACCESSORS(ThisClass, Mana);
-	ATTRIBUTE_ACCESSORS(ThisClass, MaxMana);
+	ATTRIBUTE_ACCESSORS(ThisClass, Power);
+	ATTRIBUTE_ACCESSORS(ThisClass, MaxPower);
 };

@@ -36,7 +36,7 @@ UAttributeSet* AGASP_BaseCharacter::GetAttributeSet() const
 
 void AGASP_BaseCharacter::GiveStartupAbilities()
 {
-	for (auto& Ability : StartupAbilities)
+	for (const auto& Ability : StartupAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability);
 		GetAbilitySystemComponent()->GiveAbility(AbilitySpec);
@@ -45,13 +45,24 @@ void AGASP_BaseCharacter::GiveStartupAbilities()
 
 void AGASP_BaseCharacter::InitializeAttributes()
 {
-	if (!IsValid(InitialAttributesEffect)) return;
-	const FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
-	if (!ContextHandle.IsValid()) return;
-	const FGameplayEffectSpecHandle EffectSpec = GetAbilitySystemComponent()->MakeOutgoingSpec(
-		InitialAttributesEffect, 1.f, ContextHandle);
-	if (!EffectSpec.IsValid()) return;
-	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
+	if (InitialAttributesEffects.IsEmpty()) return;
+
+	for (const auto EffectClass : InitialAttributesEffects)
+	{
+		if (!IsValid(GetAbilitySystemComponent())) return;
+		
+		const FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+		if (!ContextHandle.IsValid()) return;
+		
+		const FGameplayEffectSpecHandle EffectSpec = GetAbilitySystemComponent()->MakeOutgoingSpec(
+			EffectClass, 1.f, ContextHandle);
+		if (!EffectSpec.IsValid()) return;
+		
+		GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
+		
+	}
+	
+	
 }
 
 void AGASP_BaseCharacter::OnHealthChanged(const FOnAttributeChangeData& AttributeChangeData)

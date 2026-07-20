@@ -150,4 +150,4 @@ void UGASP_WidgetComponent::ClearAttributeChangeDelegates()
 
 	AttributeChangeDelegateHandles.Reset();
 	bAttributeDelegatesBound = false;
-}
+} 

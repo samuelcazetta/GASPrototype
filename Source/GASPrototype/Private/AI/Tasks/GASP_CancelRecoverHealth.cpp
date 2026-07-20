@@ -25,7 +25,7 @@ EBTNodeResult::Type UGASP_CancelRecoverHealth::ExecuteTask(UBehaviorTreeComponen
 	if (!IsValid(AICharacter)) return EBTNodeResult::Failed;
 
 	FGameplayTagContainer Tags;
-	Tags.AddTag(GASPTags::Effects::Healing::Regen);
+	Tags.AddTag(GASPTags::Effects::Health::Regen);
 
 	UAbilitySystemComponent* ASC = AICharacter->GetAbilitySystemComponent();
 	if (! IsValid(ASC)) return EBTNodeResult::Failed;

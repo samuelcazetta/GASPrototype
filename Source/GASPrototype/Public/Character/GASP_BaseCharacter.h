@@ -79,7 +79,8 @@ private:
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities; //Abilities BPs, not Objects
 
 	UPROPERTY(EditDefaultsOnly, Category = "GASP|Effects")
-	TSubclassOf<UGameplayEffect> InitialAttributesEffect;
+	TArray<TSubclassOf<UGameplayEffect>> InitialAttributesEffects;
+	//TSubclassOf<UGameplayEffect> InitialAttributesEffect;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GASP|HitReact")
