@@ -36,7 +36,8 @@ void AGASP_BaseProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 	AGASP_BaseCharacter* BaseCharacter = Cast<AGASP_BaseCharacter>(OtherActor);
 	if (!IsValid(BaseCharacter) || !BaseCharacter->IsAlive() || IsOwnedBy(BaseCharacter)) return;
 	UAbilitySystemComponent* AbilitySystemComponent = BaseCharacter->GetAbilitySystemComponent();
-	if (!IsValid(AbilitySystemComponent) || !HasAuthority()) return;
+	if (!IsValid(AbilitySystemComponent)) return;
+	//if (!IsValid(AbilitySystemComponent) || !HasAuthority()) return;
 	
 	// Apply Damage GE
 	FGameplayEffectContextHandle DamageContextHandle = AbilitySystemComponent->MakeEffectContext();
