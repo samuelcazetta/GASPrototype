@@ -23,7 +23,7 @@ protected:
 	                             const FGameplayEventData* TriggerEventData) override;
 
 	UFUNCTION(BlueprintCallable, Category = "GASP|Abilities")
-	void SendHitReactEventAndApplyDamage(
+	void HandleConfirmedHit(
 		const FGameplayEventData& Payload,
 		TSubclassOf<UGameplayEffect> DamageGE,
 		bool bOncePerTarget = true,

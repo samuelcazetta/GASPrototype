@@ -13,57 +13,79 @@ void UGASP_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	// used just for the send hit react event and aplly damage
+	// used just for the HandleConfirmedHit
 	if (HitActors.Num() > 0)
 		HitActors.Empty();
 }
 
 // sends Hit React event and applies damage GE to hit actors.
-void UGASP_Attack::SendHitReactEventAndApplyDamage(const FGameplayEventData& Payload,
-                                                   const TSubclassOf<UGameplayEffect> DamageGE,
-                                                   bool bOncePerTarget, TSubclassOf<UGameplayEffect> OnHitPowerChargeGE)
+void UGASP_Attack::HandleConfirmedHit(const FGameplayEventData& Payload,
+                                                   const TSubclassOf<UGameplayEffect> DamageEffect,
+                                                   bool bOncePerTarget, TSubclassOf<UGameplayEffect> SourceOnHitEffect)
 {
-	if (!IsValid(Payload.Target)) return;
+	// Source
+	UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
+	if (!IsValid(SourceASC)) return;
+	const AActor* SourceAvatar = GetAvatarActorFromActorInfo();
+	if (!IsValid(SourceAvatar)) return;
 
-	if (bOncePerTarget)
-	{
-		if (HitActors.Contains(Payload.Target)) return;
-		HitActors.Add(Payload.Target);
-	}
-
-	// checks
-	const AGASP_BaseCharacter* TargetCharacter = Cast<AGASP_BaseCharacter>(Payload.Target);
-	if (!IsValid(TargetCharacter)) return;
+	// Target
+	const AGASP_BaseCharacter* TargetCharacter = Cast<AGASP_BaseCharacter>(Payload.Target.Get());
+	if (!IsValid(TargetCharacter) || !TargetCharacter->IsAlive() || !TargetCharacter->IsTangible()) return;
 	UAbilitySystemComponent* TargetASC = TargetCharacter->GetAbilitySystemComponent();
 	if (!IsValid(TargetASC)) return;
-	
-	// sending hit react event
-	const FGameplayTag& EventTag = GASPTags::Events::HitReact;
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetASC->GetOwner(), EventTag, Payload);
 
-	// Gameplay Effects
-	UAbilitySystemComponent* AvatarASC = GetAbilitySystemComponentFromActorInfo();
-	if (!IsValid(AvatarASC)) return;
-	
-	// damage GE
-	if (IsValid(DamageGE))
+	// No damage duplication safety
+	if (bOncePerTarget)
 	{
-		const FGameplayEffectSpecHandle SpecHandle = AvatarASC->MakeOutgoingSpec(
-		DamageGE, 1.f, Payload.ContextHandle);
-		if (SpecHandle.IsValid())
+		if (HitActors.Contains(TargetCharacter)) return;
+		HitActors.Add(TargetCharacter);
+	}
+
+	// Damage the Target
+	if (IsValid(DamageEffect))
+	{
+		FGameplayEffectContextHandle DamageContextHandle = SourceASC->MakeEffectContext();
+		DamageContextHandle.AddSourceObject(this);
+
+		if (const FHitResult* HitResult = Payload.ContextHandle.GetHitResult())
 		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			DamageContextHandle.AddHitResult(*HitResult);
+		}
+
+		const FGameplayEffectSpecHandle DamageSpecHandle = SourceASC->MakeOutgoingSpec(
+			DamageEffect, 1, DamageContextHandle);
+		if (DamageSpecHandle.IsValid())
+		{
+			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageSpecHandle.Data.Get());
 		}
 	}
-	
-	// power charge GE
-	if (IsValid(OnHitPowerChargeGE))
+
+	// Sends the hit reaction event to the target ASC.
+	// Target's reaction ability most likely needs to be server-initiated, the source ASC can't directly drive target's ASC   
+	FGameplayEventData HitReactPayload = Payload;
+	HitReactPayload.Instigator = SourceAvatar;
+	HitReactPayload.Target = TargetCharacter;
+	AActor* TargetActor = TargetASC->GetOwner();
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, GASPTags::Events::HitReact,
+	                                                         HitReactPayload);
+
+	// Source reward Power Gain
+	if (IsValid(SourceOnHitEffect))
 	{
-		const FGameplayEffectSpecHandle PowerChargeSpecHandle = AvatarASC->MakeOutgoingSpec(
-			OnHitPowerChargeGE, 1.f, Payload.ContextHandle);
-		if (PowerChargeSpecHandle.IsValid())
+		FGameplayEffectContextHandle SourceEffectContextHandle = SourceASC->MakeEffectContext();
+		SourceEffectContextHandle.AddSourceObject(this);
+
+		if (const FHitResult* HitResult = Payload.ContextHandle.GetHitResult())
 		{
-			AvatarASC->ApplyGameplayEffectSpecToSelf(*PowerChargeSpecHandle.Data.Get());
+			SourceEffectContextHandle.AddHitResult(*HitResult);
+		}
+
+		const FGameplayEffectSpecHandle SourceEffectSpecHandle = SourceASC->MakeOutgoingSpec(
+			SourceOnHitEffect, 1, SourceEffectContextHandle);
+		if (SourceEffectSpecHandle.IsValid())
+		{
+			SourceASC->ApplyGameplayEffectSpecToSelf(*SourceEffectSpecHandle.Data.Get());
 		}
 	}
 }

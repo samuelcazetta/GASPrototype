@@ -46,11 +46,10 @@ void AGASP_BaseCharacter::GiveStartupAbilities()
 void AGASP_BaseCharacter::InitializeAttributes()
 {
 	if (InitialAttributesEffects.IsEmpty()) return;
+	if (!IsValid(GetAbilitySystemComponent())) return;
 
-	for (const auto EffectClass : InitialAttributesEffects)
+	for (const auto EffectClass : InitialAttributesEffects) 
 	{
-		if (!IsValid(GetAbilitySystemComponent())) return;
-		
 		const FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
 		if (!ContextHandle.IsValid()) return;
 		
@@ -59,10 +58,7 @@ void AGASP_BaseCharacter::InitializeAttributes()
 		if (!EffectSpec.IsValid()) return;
 		
 		GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
-		
 	}
-	
-	
 }
 
 void AGASP_BaseCharacter::OnHealthChanged(const FOnAttributeChangeData& AttributeChangeData)
