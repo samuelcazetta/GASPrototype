@@ -74,8 +74,10 @@ void AGASP_BaseCharacter::HandleDeath()
 	UAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponent();
 	if (!IsValid(AbilitySystemComponent)) return;
 	
+	// can insert any extra info here in Payload if necessary
 	FGameplayEventData Payload;
-	//can insert any extra info here in Payload if necessary
+	
+	// Currently it's ideal the Death ability being server-initiated.
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, GASPTags::Events::Death, Payload);
 	
 }

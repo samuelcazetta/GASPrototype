@@ -80,10 +80,13 @@ TArray<FHitResult> UGASP_BlueprintFunctionLibrary::FindCharactersInRange(
 	TArray<FHitResult> HitResults;
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(Instigator);
-	UKismetSystemLibrary::SphereTraceMulti(World, Origin, Origin, Radius, UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), false,
-	                                       ActorsToIgnore, bDrawDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None,HitResults, true,
+	UKismetSystemLibrary::SphereTraceMulti(World, Origin, Origin, Radius,
+	                                       UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1), false,
+	                                       ActorsToIgnore,
+	                                       bDrawDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None,
+	                                       HitResults, true,
 	                                       FLinearColor::Red, FLinearColor::Green, 0.5f);
-	
+
 	if (HitResults.Num() == 0) return {};
 	return HitResults;
 }
