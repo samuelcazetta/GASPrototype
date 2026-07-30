@@ -77,7 +77,7 @@ void AGASP_BaseCharacter::HandleDeath()
 	// can insert any extra info here in Payload if necessary
 	FGameplayEventData Payload;
 	
-	// Currently it's ideal the Death ability being server-initiated.
+	// Currently, it's ideal the Death ability being server-initiated.
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, GASPTags::Events::Death, Payload);
 	
 }

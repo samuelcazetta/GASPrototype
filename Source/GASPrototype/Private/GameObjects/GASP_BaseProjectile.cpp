@@ -6,6 +6,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Character/GASP_PlayerCharacter.h"
+#include "Components/AudioComponent.h"
+#include "Components/SceneComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GameplayTags/GASP_EventTags.h"
 
@@ -16,8 +18,12 @@ AGASP_BaseProjectile::AGASP_BaseProjectile()
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	
-	ProjectileMoveComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMoveComponent"));
+	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
+	SetRootComponent(SceneRoot);
 	
+	ProjectileMoveComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMoveComponent"));
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(SceneRoot);
 	
 }
 
@@ -75,5 +81,9 @@ void AGASP_BaseProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	SetLifeSpan(LifeSpan);
+	
+	if (!IsValid(AudioEffect)) return;
+	AudioComponent->SetSound(AudioEffect);
+	AudioComponent->Play();
 }
 

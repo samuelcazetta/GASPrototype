@@ -8,6 +8,9 @@
 
 class UGameplayEffect;
 class UProjectileMovementComponent;
+class UAudioComponent;
+class USceneComponent;
+class USoundBase;
 
 UCLASS()
 class GASPROTOTYPE_API AGASP_BaseProjectile : public AActor
@@ -27,7 +30,16 @@ virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "GASP|Projectile")
+	TObjectPtr<USceneComponent> SceneRoot;
+	
+	UPROPERTY(VisibleAnywhere, Category = "GASP|Projectile")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMoveComponent;
+	
+	UPROPERTY(VisibleAnywhere, Category = "GASP|Projectile")
+	TObjectPtr<UAudioComponent> AudioComponent;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "GASP|Projectile")
+	TObjectPtr<USoundBase> AudioEffect;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "GASP|Projectile")
 	TSubclassOf<UGameplayEffect> DamageEffect;
