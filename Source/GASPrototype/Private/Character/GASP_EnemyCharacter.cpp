@@ -51,6 +51,12 @@ void AGASP_EnemyCharacter::HandleDeath()
 	OnDied.Broadcast();
 }
 
+void AGASP_EnemyCharacter::ResetAttributes()
+{
+	Super::ResetAttributes();
+	OnRespawn.Broadcast();
+}
+
 UAbilitySystemComponent* AGASP_EnemyCharacter::GetAbilitySystemComponent() const
 {
 	if (!IsValid(AbilitySystemComponent)) return nullptr;

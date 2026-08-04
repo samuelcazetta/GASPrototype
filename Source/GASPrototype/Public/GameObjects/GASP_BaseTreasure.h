@@ -28,10 +28,12 @@ protected:
 	TObjectPtr<USkeletalMeshComponent> Chest;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GASP|Treasure")
-	TObjectPtr<UChildActorComponent> PickUp;
+	TSubclassOf<AGASP_BasePickUp> PickUp;
 	
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnTreasureUnlocked();
+	void PlayOpenAnimation();
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayCloseAnimation();
 	
 	virtual void BeginPlay() override;
 
@@ -44,7 +46,9 @@ private:
 	
 	UFUNCTION()
 	void UnlockTreasure();
-	
+	UFUNCTION()
+	void ReLockTreasure();
+
 	void Init();
 	void ApplyUnlockedState();
 };

@@ -63,7 +63,7 @@ public:
 	bool IsAlive() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "GASP|Death")
-	void ResetAttributes();
+	virtual void ResetAttributes();
 
 protected:
 	//virtual void BeginPlay() override;

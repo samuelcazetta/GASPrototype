@@ -6,6 +6,7 @@
 #include "Components/ChildActorComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameObjects/GASP_BasePickUp.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -17,15 +18,12 @@ AGASP_BaseTreasure::AGASP_BaseTreasure()
 
 	Chest = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Chest"));
 	SetRootComponent(Chest);
-
-	PickUp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Pickup"));
-	PickUp->SetupAttachment(Chest);
 }
 
 void AGASP_BaseTreasure::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
+
 	DOREPLIFETIME(AGASP_BaseTreasure, bUnlocked);
 }
 
@@ -35,43 +33,53 @@ void AGASP_BaseTreasure::UnlockTreasure()
 
 	bUnlocked = true;
 	ApplyUnlockedState();
+	PlayOpenAnimation(); // animation on server
+}
+
+void AGASP_BaseTreasure::ReLockTreasure()
+{
+	if (!HasAuthority() || !bUnlocked) return;
+
+	bUnlocked = false;
+	PlayCloseAnimation(); // animation on server
 }
 
 void AGASP_BaseTreasure::OnRep_Unlocked()
 {
-	if (!bUnlocked) return;
-	ApplyUnlockedState();
+	// animations on clients
+	
+	if (bUnlocked)
+	{
+		PlayOpenAnimation();
+	}
+	else
+	{
+		PlayCloseAnimation();
+	}
 }
 
 void AGASP_BaseTreasure::ApplyUnlockedState()
 {
-	AGASP_BasePickUp* PickUpActor = Cast<AGASP_BasePickUp>(PickUp->GetChildActor());
-	if (!IsValid(PickUpActor)) return;
+	if (!HasAuthority()) return;
+	if (!IsValid(PickUp)) return;
 
-	PickUpActor->SetActorHiddenInGame(false);
-	PickUpActor->SetActorEnableCollision(true);
-	
-	OnTreasureUnlocked();
+	FVector SpawnLocation = GetActorLocation() + FVector(0.0f, 0.0f, 100.0f);
+	GetWorld()->SpawnActor<AGASP_BasePickUp>(PickUp, SpawnLocation, FRotator::ZeroRotator);
 }
 
 void AGASP_BaseTreasure::Init()
 {
-	AGASP_BasePickUp* PickUpActor = Cast<AGASP_BasePickUp>(PickUp->GetChildActor());
-	if (IsValid(PickUpActor))
+	if (IsValid(PickUp))
 	{
 		if (bUnlocked)
 		{
 			ApplyUnlockedState();
 		}
-		else
-		{
-			PickUpActor->SetActorHiddenInGame(true);
-			PickUpActor->SetActorEnableCollision(false);
-		}
 	}
 
 	if (!IsValid(Guard)) return;
 	Guard->OnDied.AddDynamic(this, &AGASP_BaseTreasure::UnlockTreasure);
+	Guard->OnRespawn.AddDynamic(this, &AGASP_BaseTreasure::ReLockTreasure);
 }
 
 void AGASP_BaseTreasure::BeginPlay()
