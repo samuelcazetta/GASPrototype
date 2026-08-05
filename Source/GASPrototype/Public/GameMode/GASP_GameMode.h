@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "GASP_GameMode.generated.h"
 
+class UAbilitySystemComponent;
 class AGASP_BaseCharacter;
 
 /**
@@ -20,12 +21,15 @@ private:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GASP|GameMode")
 	TArray<TSubclassOf<AGASP_BaseCharacter>> Pawns;
+
 public:
-	
+	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 	
 	UFUNCTION(BlueprintPure, Category = "GASP|GameMode")
 	FVector GetRandomSpawnPoint();
 	
 	UFUNCTION(BlueprintCallable, Category = "GASP|GameMode")
 	void SwitchCharacter(APlayerController* PlayerController);
+	
+	void ResetASC(UAbilitySystemComponent* Asc);
 };

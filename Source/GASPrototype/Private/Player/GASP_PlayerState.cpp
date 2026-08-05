@@ -10,13 +10,13 @@
 AGASP_PlayerState::AGASP_PlayerState()
 {
 	//Raise PlayerState net update frequency, necessary to use GAS here. The default value is 1. 
-	SetNetUpdateFrequency(100.f);  
+	NetUpdateFrequency = 100.f;
 	
-	AbilitySystemComponent = CreateDefaultSubobject<UGASP_AbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent = CreateDefaultSubobject<UGASP_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed); //minimal replication necessary for Owner (this class)
 	
-	AttributeSet = CreateDefaultSubobject<UGASP_AttributeSet>("AttributeSet");
+	AttributeSet = CreateDefaultSubobject<UGASP_AttributeSet>(TEXT("AttributeSet"));
 	
 	
 }
@@ -24,4 +24,14 @@ AGASP_PlayerState::AGASP_PlayerState()
 UAbilitySystemComponent* AGASP_PlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void AGASP_PlayerState::SetSelectedCharacterTag(FGameplayTag CharacterTag)
+{
+	SelectedCharacterTag = CharacterTag;
+}
+
+FGameplayTag AGASP_PlayerState::GetSelectedCharacterTag() const
+{
+	return SelectedCharacterTag;
 }

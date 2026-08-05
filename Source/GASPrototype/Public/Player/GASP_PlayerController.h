@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
 #include "GASP_PlayerController.generated.h"
 
@@ -18,10 +19,15 @@ class GASPROTOTYPE_API AGASP_PlayerController : public APlayerController
 
 public:
 	virtual void OnRep_Pawn() override;
+	
+	UFUNCTION(Server, Reliable)
+	void Server_SetSelectedCharacterTag(FGameplayTag SelectedCharacterTag);
+	
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
+	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY()

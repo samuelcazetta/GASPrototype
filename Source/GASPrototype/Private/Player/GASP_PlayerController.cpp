@@ -5,10 +5,36 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/GameModeBase.h"
+#include "GameInstance/GASP_AdvancedFriendsGameInstance.h"
+#include "GameMode/GASP_GameMode.h"
 #include "GameplayTags/GASP_AbilityTags.h"
-#include "GameplayTags/GASP_EventTags.h"
 #include "GASPrototype/Public/Character/GASP_BaseCharacter.h"
+#include "Player/GASP_PlayerState.h"
 
+
+void AGASP_PlayerController::Server_SetSelectedCharacterTag_Implementation(const FGameplayTag SelectedCharacterTag)
+{
+	if (!SelectedCharacterTag.IsValid()) return;
+
+	AGASP_PlayerState* PS = GetPlayerState<AGASP_PlayerState>();
+	if (!IsValid(PS)) return;
+
+	PS->SetSelectedCharacterTag(SelectedCharacterTag);
+
+	AGASP_GameMode* GameMode = Cast<AGASP_GameMode>(GetWorld()->GetAuthGameMode());
+	if (!IsValid(GameMode)) return;
+
+	GameMode->ResetASC(PS->GetAbilitySystemComponent());
+
+	if (APawn* CurrentPawn = GetPawn())
+	{
+		UnPossess();
+		CurrentPawn->Destroy();
+	}
+
+	GameMode->RestartPlayer(this);
+}
 
 void AGASP_PlayerController::SetupInputComponent()
 {
@@ -49,6 +75,18 @@ void AGASP_PlayerController::OnRep_Pawn()
 {
 	Super::OnRep_Pawn();
 	BaseCharacter = Cast<AGASP_BaseCharacter>(GetPawn());
+}
+
+void AGASP_PlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (!IsLocalController()) return;
+	UGASP_AdvancedFriendsGameInstance* GI = Cast<UGASP_AdvancedFriendsGameInstance>(GetGameInstance());
+	if (!IsValid(GI)) return;
+
+	if (!GI->SelectedCharacterTag.IsValid()) return;
+	Server_SetSelectedCharacterTag(GI->SelectedCharacterTag);
 }
 
 void AGASP_PlayerController::OnUnPossess()

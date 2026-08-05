@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/PlayerState.h"
 #include "GASP_PlayerState.generated.h"
 
@@ -19,6 +20,10 @@ public:
 	AGASP_PlayerState();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UAttributeSet* GetAttributeSet() const {return AttributeSet;}
+	
+	void SetSelectedCharacterTag(FGameplayTag CharacterTag);
+	FGameplayTag GetSelectedCharacterTag() const;
+
 protected:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "GASP|Abilities")
@@ -27,4 +32,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 	
+	UPROPERTY(VisibleAnywhere, Category = "GASP|CharacterRouting")
+	FGameplayTag SelectedCharacterTag;
 };

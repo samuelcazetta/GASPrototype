@@ -30,7 +30,7 @@ void UGASP_FindClosestTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 	float ClosestDistanceSq = TNumericLimits<float>::Max();
 	const FVector StartLocation = AICharacter->GetStartLocation();
 	for (const FHitResult& Hit : UGASP_BlueprintFunctionLibrary::FindCharactersInRange(
-		     AICharacter, StartLocation, AICharacter->GetLookAtRange(), true))
+		     AICharacter, StartLocation, AICharacter->GetLookAtRange(), false))
 	{
 		AGASP_PlayerCharacter* Player = Cast<AGASP_PlayerCharacter>(Hit.GetActor());
 		if (!IsValid(Player) || !Player->IsAlive()) continue;

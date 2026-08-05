@@ -6,7 +6,35 @@
 #include "AbilitySystemComponent.h"
 #include "Character/GASP_BaseCharacter.h"
 #include "GameFramework/PlayerStart.h"
+#include "GameplayTags/GASP_CharacterTags.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/GASP_PlayerState.h"
+
+UClass* AGASP_GameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
+{
+	const AGASP_PlayerState* GASPPlayerState =
+		InController ? InController->GetPlayerState<AGASP_PlayerState>() : nullptr;
+
+	if (!IsValid(GASPPlayerState))
+		return Super::GetDefaultPawnClassForController_Implementation(InController);
+
+	const FGameplayTag SelectedCharacterTag = GASPPlayerState->GetSelectedCharacterTag();
+	if (!SelectedCharacterTag.IsValid())
+		return Super::GetDefaultPawnClassForController_Implementation(InController);
+	
+	
+	if (SelectedCharacterTag.MatchesTagExact(GASPTags::Characters::Wukong) && Pawns.IsValidIndex(0))
+	{
+		return Pawns[0];
+	}
+	
+	if (SelectedCharacterTag.MatchesTagExact(GASPTags::Characters::Phase) && Pawns.IsValidIndex(1))
+	{
+		return Pawns[1];
+	}
+	
+	return DefaultPawnClass;
+}
 
 FVector AGASP_GameMode::GetRandomSpawnPoint()
 {
@@ -54,10 +82,17 @@ void AGASP_GameMode::SwitchCharacter(APlayerController* PlayerController)
 		OldCharacter->GetActorRotation());
 	if (!IsValid(NewCharacter)) return;
 
-	Asc->CancelAllAbilities();
-	Asc->ClearAllAbilities();
-	Asc->RemoveActiveEffects(FGameplayEffectQuery());
+	ResetASC(Asc);
 
 	OldCharacter->Destroy();
 	PlayerController->Possess(NewCharacter);
+}
+
+void AGASP_GameMode::ResetASC(UAbilitySystemComponent* Asc)
+{
+	if (!IsValid(Asc)) return;
+
+	Asc->CancelAllAbilities();
+	Asc->ClearAllAbilities();
+	Asc->RemoveActiveEffects(FGameplayEffectQuery());
 }
