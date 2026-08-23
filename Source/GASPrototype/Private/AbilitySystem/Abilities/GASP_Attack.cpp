@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Character/GASP_BaseCharacter.h"
 #include "GameplayTags/GASP_EventTags.h"
+#include "Utility/GASP_BlueprintFunctionLibrary.h"
 
 void UGASP_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                    const FGameplayAbilityActivationInfo ActivationInfo,
@@ -16,6 +17,40 @@ void UGASP_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	// used just for the HandleConfirmedHit
 	if (HitActors.Num() > 0)
 		HitActors.Empty();
+}
+
+AGASP_BaseCharacter* UGASP_Attack::FindBestTarget(const float DotThreshold, const float SearchRange)
+{
+	AActor* Owner = GetAvatarActorFromActorInfo();
+	if (!IsValid(Owner)) return nullptr;
+	FVector Location = Owner->GetActorLocation();
+
+	TArray<FHitResult> HitResults = UGASP_BlueprintFunctionLibrary::FindCharactersInRange(
+		Owner, Location, SearchRange);
+	
+	if (HitResults.IsEmpty()) return nullptr;
+
+	const FVector OwnerLocation = Owner->GetActorLocation();
+	const FVector Forward = Owner->GetActorForwardVector().GetSafeNormal2D();
+
+	float BestDot = DotThreshold;  //  0.7f would be something like 45°
+	AGASP_BaseCharacter* BestTarget = nullptr;
+
+	for (auto Hit : HitResults)
+	{
+		AGASP_BaseCharacter* Candidate = Cast<AGASP_BaseCharacter>(Hit.GetActor());
+		if (!IsValid(Candidate) || !Candidate->IsAlive()) continue;
+
+		const FVector Direction = (Candidate->GetActorLocation() - OwnerLocation).GetSafeNormal2D();
+
+		const float Dot = FVector::DotProduct(Forward, Direction);
+		if (Dot > BestDot)
+		{
+			BestDot = Dot;
+			BestTarget = Candidate;
+		}
+	}
+	return BestTarget;
 }
 
 // sends Hit React event and applies damage GE to hit actors.

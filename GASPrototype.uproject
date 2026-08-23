@@ -31,6 +31,10 @@
 			"Enabled": true
 		},
 		{
+			"Name": "SteamSockets",
+			"Enabled": true
+		},
+		{
 			"Name": "AdvancedSessions",
 			"Enabled": true
 		},

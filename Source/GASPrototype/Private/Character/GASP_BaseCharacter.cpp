@@ -63,7 +63,7 @@ void AGASP_BaseCharacter::InitializeAttributes()
 
 void AGASP_BaseCharacter::OnHealthChanged(const FOnAttributeChangeData& AttributeChangeData)
 {
-	if (AttributeChangeData.NewValue <= 0.f)
+	if (AttributeChangeData.OldValue > 0.f && AttributeChangeData.NewValue <= 0.f)
 	{
 		HandleDeath();
 	}
@@ -77,9 +77,9 @@ void AGASP_BaseCharacter::HandleDeath()
 	// can insert any extra info here in Payload if necessary
 	FGameplayEventData Payload;
 	
-	// Currently, it's ideal the Death ability being server-initiated.
+	// Currently, Death ability is event-driven
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, GASPTags::Events::Death, Payload);
-	
+	 
 }
 
 void AGASP_BaseCharacter::ActivateAbility(const FGameplayTag& PrimaryTag,

@@ -13,8 +13,7 @@
 AGASP_BaseTreasure::AGASP_BaseTreasure()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	SetReplicates(true);
+	bReplicates = true;
 
 	Chest = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Chest"));
 	SetRootComponent(Chest);

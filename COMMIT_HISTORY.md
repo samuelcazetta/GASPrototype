@@ -1,347 +1,400 @@
-﻿# Historico completo de commits
+# GASPrototype Development Log
 
-Gerado a partir de `git log --reverse` em 2026-07-30.
+Generated from `git log --reverse` on 2026-08-05.
 
-## 1. **Initial commit**
+This document summarizes the technical evolution of **GASPrototype**, an Unreal Engine C++ gameplay prototype focused on the Gameplay Ability System, modular combat systems, AI behavior, replicated gameplay interactions, Steam sessions, and data-driven content workflows.
+
+## Technical Overview
 
-- Data: 15/05/2026
-- Description: Sem descricao.
+Across the project history, the prototype was built from the start as a GAS-focused, multiplayer-aware Unreal Engine gameplay sandbox, then expanded into a playable combat prototype with player and NPC interactions:
 
-## 2. **git lfs**
-
-- Data: 15/05/2026
-- Description: Sem descricao.
-
-## 3. **Add initial README for Gameplay Ability System Prototype**
-
-- Data: 15/05/2026
-- Description: This README provides an overview of the Unreal Gameplay Ability System Prototype, detailing its features, architecture, and purpose.
-
-## 4. **chore: ignore IDE files and add project note**
-
-- Data: 15/05/2026
-- Description: Sem descricao.
-
-## 5. **ThirdParty Asset**
-
-- Data: 15/05/2026
-- Description: Character Wukong
-
-## 6. **feat: add player character and enhanced input setup**
-
-- Data: 15/05/2026
-- Description:
-  - Adds base and player character classes with third-person camera setup
-  - Implements player controller input bindings for movement, look, and jump
-  - Adds Enhanced Input assets, player blueprints, game mode, and test map
-  - Updates module dependencies for UMG and Gameplay Ability System support
-
-## 7. **feat: add initial GAS ability system setup**
-
-- Data: 17/05/2026
-- Description:
-  - Adds base gameplay ability configuration flags
-  - Adds Ability System Component to the player state with mixed replication
-  - Initializes GAS actor info on player possession and player state replication
-  - Adds startup ability granting support to the base character
-  - Adds skill input bindings for attack, dash, and special actions
-  - Updates player/controller blueprints, input mapping assets, test map, and Wukong-related assets
-
-## 8. **feat: wire skill inputs to native gameplay tags**
-
-- Data: 18/05/2026
-- Description:
-  Adds native gameplay tags for attack, dash, and special abilities
-
-  Routes skill input actions through the base character ability activation flow
-
-  Updates movement input to use the cached base character reference
-
-  Updates player ability/blueprint assets for the attack ability setup
-
-  Adds experimental movement tuning notes for the player character
-
-## 9. **feat: add GAS combo attack flow**
-
-- Data: 20/05/2026
-- Description:
-  - Adds Wukong attack ability assets for start, chain and finisher attack
-  - Adds gameplay tags for attack continuation, combo window events, combo-ready states, and movement input blocking
-  - Updates ability activation to support primary and fallback ability tags for combo chaining
-  - Blocks movement input while the character has the movement input blocked state tag
-  - Adds attack-specific gameplay effects, gameplay cue, notify, and audio assets
-  - Updates Wukong attack montages, player blueprint, and test map for the combo attack setup
-
-## 10. **feat: add melee attack trace event pipeline**
-
-- Data: 22/05/2026
-- Description:
-  - Adds a melee attack notify state with socket-based sphere tracing
-  - Routes melee hit detection through the GAS gameplay event pipeline
-  - Adds attack hit gameplay tag for melee combat events
-  - Adds blueprint utility helper to dispatch gameplay events with hit result payload data
-  - Adds custom attack collision channel and character overlap collision setup
-  - Updates attack ability flow to react to melee hit events
-  - Updates Wukong attack montages, gameplay cue, player blueprint, and skeleton assets
-  - Routes controller alive validation through base character state
-
-## 11. **feat: add GAS attributes and hit reaction flow**
-
-- Data: 28/05/2026
-- Description:
-  - Adds custom ability system component with ActivateOnGiven support
-  - Adds replicated attribute set for health and mana initialization
-  - Initializes character attributes through a startup gameplay effect
-  - Adds hit reaction gameplay ability with cached hit direction vectors
-  - Adds hit react container for montage, sound, and particle response data
-  - Adds utility helpers for hit direction and gameplay event dispatch
-  - Adds gameplay tags for hit react and auto-activated abilities
-  - Reorganizes ability classes under the AbilitySystem/Abilities folder
-  - Updates Wukong attack, damage, combo, gameplay cue, and hit react assets
-  - Moves Wukong player and melee montage assets into the project content structure
-
-## 12. **feat: add GAS attribute widget binding flow**
-
-- Data: 28/05/2026
-- Description:
-  - Adds attribute widget base class for displaying current and max attribute values
-  - Adds widget component that binds child widgets to GAS attribute change delegates
-  - Defers widget binding until the ASC and AttributeSet are initialized
-  - Broadcasts ASC and AttributeSet initialization from the player character
-  - Exposes AttributeSet access through base/player character and player state
-  - Broadcasts attribute initialization events for UI synchronization
-  - Pushes initial attribute values to widgets before future change events
-
-## 13. **feat: add player stats UI widgets**
-
-- Data: 01/06/2026
-- Description:
-  - Adds player stats widget and reusable health bar widget assets
-  - Adds blueprint widget component for GAS attribute UI
-  - Updates Wukong player blueprint to use the new UI widget setup
-
-## 14. **feat: add dash ability flow**
-
-- Data: 04/06/2026
-- Description:
-  - Adds player dash ability, dash cooldown effect, dash notify, and dash movement curve
-  - Adds dash gameplay cue, Niagara dash trail FX, and GameplayCue.Dash config entry
-  - Adds Wukong dash/flip animations and updates player, input mapping, test map, and animation assets
-  - Adds gameplay tags for dash cooldown, air-dashed movement state, and intangible state
-  - Clears the air-dashed state when the character lands
-  - Adds tangibility checks so melee hit events ignore intangible targets
-  - Adds a gameplay ability helper for removing matching loose gameplay tags
-  - Renames/moves Wukong attack and hit react montages into the project animation set
-
-## 15. **feat: add death flow and combat audio cues**
-
-- Data: 16/06/2026
-- Description:
-  - Adds death ability/event/state tags and death gameplay effect
-  - Triggers death gameplay event when health reaches zero
-  - Updates IsAlive to use the Dead gameplay tag instead of always returning true
-  - Adds Wukong death ability and death montage assets
-  - Adds attribute reset helper for respawn/retry flows
-  - Adds GameMode helper to pick a random PlayerStart spawn point
-  - Updates Wukong player Blueprint with death, hit react, dash, UI, and audio references
-  - Replaces/renames dash gameplay cue and adds combat sound cues for dash, hit impact, and Wukong attacks
-  - Enables WaveformEditor plugin for audio asset work
-  - Updates attack, hit react, dash, map, and game mode assets to match the new flow
-
-## 16. **feat: add Wukong special attack flow**
-
-- Data: 22/06/2026
-- Description:
-  - Adds Wukong special attack ability, cooldown effect, damage effect, montages, notifies, and audio cues
-  - Adds GameplayCue.Special and special attack quote gameplay cues
-  - Adds special attack cooldown gameplay tag
-  - Adds shared attack helper to send hit react events and apply damage once per target
-  - Updates melee attack notify trace settings for special attack hit detection
-  - Adds player post-process component and custom depth setup for special attack visual highlighting
-  - Adds post-process material assets for the special attack effect
-  - Updates Wukong player Blueprint to include the special attack startup ability and fade-in post-process timeline
-  - Updates attack/dash/map assets and removes older basic attack/attack sound cue assets
-  - Adjusts render settings for custom depth and exposure behavior
-
-## 17. **feat: add Paragon Phase character assets**
-
-- Data: 22/06/2026
-- Description:
-  - Adds the Paragon Phase content pack with meshes, materials, animations, FX, audio, and maps
-  - Adds the Phase player character Blueprint under GASPrototype characters
-  - Updates the game mode Blueprint to reference the new Phase character setup
-
-## 18. **chore: relocate Paragon Phase assets to ThirdParty**
-
-- Data: 22/06/2026
-- Description:
-  - Moves imported Paragon Phase content into the ThirdParty content folder
-  - Keeps external/vendor assets separated from project-specific GASPrototype assets
-
-## 19. **feat: split player abilities into base and character variants**
-
-- Data: 23/06/2026
-- Description:
-  - Moves shared player ability Blueprints into a Base ability folder
-  - Adds Wukong-specific dash and special attack ability variants
-  - Adds Phase-specific dash ability setup using a retargeted dash montage
-  - Retargets a Wukong dash animation for Phase to cover the missing native dash animation
-  - Adds Phase animation assets for dash, hit react, flip, and retargeting
-  - Renames the Wukong player Blueprint to make room for character-specific player setups
-  - Updates Phase player, dash cooldown, and Phase animation Blueprint Mask references
-
-## 20. **feat: add Phase ranged attack flow**
-
-- Data: 29/06/2026
-- Description:
-  - Adds a ranged attack ability base with target lookup for forward-aligned enemies
-  - Adds cpp bp utility helpers to find nearby GAS characters by overlap radius and validate facing direction with dot product checks
-  - Adds a replicated base projectile actor that applies damage and triggers hit react on overlap
-  - Adds Phase projectile attack ability, projectile notify, attack montage, projectile Blueprint, and emissive projectile material
-  - Wires the Phase player and animation Blueprint for the projectile attack setup
-
-## 21. **feat: add pushback to Wukong special attack**
-
-- Data: 01/07/2026
-- Description:
-  - Adds a Blueprint-callable pushback helper for launching hit actors away from the avatar
-  - Scales launch force by distance using inner and outer radius falloff
-  - Supports angled launch arcs and optional debug visualization for pushback direction/force
-  - Updates Wukong special attack to apply pushback
-
-## 22. **feat: add player character switch flow**
-
-- Data: 02/07/2026
-- Description:
-  - Adds GameMode-driven character cycling that skips the currently possessed character
-
-  - Clears persisted PlayerState ASC abilities and active effects before possession changes
-
-  - Cleans up attribute widget delegates so repeated character switches do not call destroyed widgets
-
-## 23. **feat: add Phase special attack flow**
-
-- Data: 06/07/2026
-- Description:
-  - Adds a shared special attack ability class under the GAS ability hierarchy
-  - Adds Phase special attack flow with montage, logic and gameplay effect/cue activation
-  - Adds a BlueprintNativeEvent fade hook on the player character for special attack presentation
-  - Adds Phase special attack VFX using the Phase ult charge particle
-  - Reuses the shared special attack ability path across Phase and Wukong instead of duplicating character logic
-  - Adds character gameplay tags to keep character-specific VFX/cue routing data-driven
-  - Preserves gameplay event hit context through damage application for cleaner hit react/VFX integration
-  - Switches range targeting to sphere trace hit results so abilities can reuse impact/location context
-  - Updates Wukong special attack with knockback and its own gameplay cue as validation of the shared flow
-
-## 24. **feat: add enemy character GAS foundation**
-
-- Data: 06/07/2026
-- Description:
-  - Adds an enemy character class with its own replicated ASC and AttributeSet
-  - Initializes enemy GAS actor info, startup abilities, attributes, and health change handling on BeginPlay
-  - Adds a base AI controller and Blueprint controller for future enemy behavior
-  - Adds AIModule dependency for AI controller support
-  - Adds an enemy character Blueprint wired to the new C++ enemy/AI setup
-  - Reorganizes playable character assets under Characters/Player for clearer player/enemy separation
-
-## 25. **feat: add Paragon minion assets and basic enemy setup**
-
-- Data: 07/07/2026
-- Description:
-  - Adds Paragon Minions third-party content for enemy character prototyping
-  - Creates the enemy character Blueprint for the minion-based enemy setup
-  - Gives startup abilities, attributes and UI do enemy BP
-  - Creates the enemy basic Animation Blueprint with threadsafe animation update
-  - Renames shared ability Blueprints with a `_Base` suffix for clearer inheritance
-
-## 26. **feat: add enemy BT combat flow**
-
-- Data: 15/07/2026
-- Description:
-  - Adds enemy behavior tree and blackboard flow for combat, return, and idle states
-  - Starts the behavior tree from `AGASP_AIController` and stores the enemy spawn location for return behavior
-  - Adds BT services for AI perception, alive state synchronization, target acquisition, and focus management
-  - Adds BT tasks that drive enemy combat through the Gameplay Ability System, including melee attacks, health regeneration, and regeneration cancellation
-  - Adds combat flow that combines Behavior Trees with GAS abilities for enemy attack execution
-  - Adds return and idle flow that restores the enemy to its guarded position and starts out-of-combat regeneration
-  - Adds gameplay tags for enemy abilities and regeneration effects
-  - Adds enemy melee, hit react, death, and health recovery GAS ability/effect assets
-
-## 27. **chore: gameplay polish**
-
-- Data: 15/07/2026
-- Description:
-  - Improves gameplay and AI robustness
-  - Standardizes asset naming
-  - Removes obsolete files
-
-## 28. **feat: add guarded treasure pickup flow**
-
-- Data: 16/07/2026
-- Description:
-  - Adds replicated pickup actor support that applies a configured GameplayEffect to overlapping player characters
-  - Adds replicated treasure actor support with a guarded unlock flow and Blueprint event for unlock presentation
-  - Broadcasts an enemy death delegate so world objects can react to defeated guards outside the GAS ability flow
-  - Hides and disables treasure pickup collision until the assigned guard dies
-  - Adds treasure, pickup, and renamed projectile Blueprints using the `BP_GASP_*` naming pattern
-  - Adds Asure chest and Paragon buff FX assets for treasure and pickup presentation
-  - Updates TestMap with guarded treasure/pickup setup and removes generated placeholder geometry
-
-## 29. **feat: add power resource and special cost flow**
-
-- Data: 20/07/2026
-- Description:
-  - Adds replicated Power/MaxPower attributes
-  - Adds Power initialization, clamping, replication notifies, and a dedicated player power bar widget
-  - Adds `GE_PowerCharge` as a startup regen effect that slowly fills the Power bar over time
-  - Adds `GE_PowerCharge_OnHit` to reward successful hits by charging the attacker’s Power faster
-  - Adds `GE_SpecialCost` so special abilities consume Power on activation
-  - Updates attack damage helper to optionally apply on-hit Power charge effects to the attacker
-  - Updates projectile hit logic to grant on-hit Power charge to the projectile owner after successful damage/hit react
-  - Updates player/enemy attack and special ability assets to use Power charge and special cost effects
-  - Supports multiple initial attribute effects on base characters for cleaner startup effect composition
-  - Updates UI widget bindings to include the new Power display
-
-## 30. **chore: clean up gameplay cue and special attack assets**
-
-- Data: 21/07/2026
-- Description:
-  - Updates hit react references to keep the cue name character-agnostic
-  - Cleans up Phase and Wukong special attack ability/cue assets after the Power cost changes
-  - Adjusts projectile overlap handling while preserving damage, hit react, and Power charge flow
-
-## 31. **feat: move hit reactions and death to event-driven GAS abilities**
-
-- Data: 24/07/2026
-- Description:
-  - Adds a Server Initiated hit reaction ability activated by Event.HitReact, moving montage/cancel/block state handling into the Gameplay Ability flow
-  - Keeps GC_HitReact focused on cosmetic feedback such as VFX and SFX instead of driving core reaction logic
-  - Refactors attack hit handling into HandleConfirmedHit to validate targets, prevent duplicate hits, apply damage, send Event.HitReact to the target, and apply source on-hit effects
-  - Preserves multiplayer authority by having the server dispatch the hit reaction event on the target ASC instead of the source directly driving the victim reaction
-  - Updates melee and special attack assets to use the new confirmed-hit consequence flow
-  - Updates player and enemy startup abilities to include the event-driven hit react and death abilities
-  - Keeps death routed through the health change flow into Event.Death, letting GA_GASP_Death own terminal state, cancellation, and blocking behavior
-  - Simplifies initial attribute initialization by validating the Ability System Component once before applying startup effects
-
-## 32. **fix: use instigator hit react effects in gameplay cue**
-
-- Data: 27/07/2026
-- Description:
-  - Updates the hit react cue flow to read particles and sound from the instigator's HitReactContainer instead of the reacting target
-  - Preserves the target as the actor receiving the hit reaction while letting the attack source define the impact feedback
-  - Adjusts GA_GASP_HitReactByEvent and GC_HitReact assets around the corrected cue parameter flow
-  - Cleans up minor base character death comments and range helper formatting
-
-## 33. **feat: expand gameplay cue and impact feedback**
-
-- Data: 30/07/2026
-- Description:
-  - Adds character-specific attack and hit impact cues for Phase, Wukong, and enemies
-  - Adds Phase voice/audio feedback for special attack and projectile attack, including a dedicated projectile looping sound
-  - Adds native special attack activation audio through UGASP_SpecialAttack
-  - Adds native projectile audio support with an AudioComponent and configurable AudioEffect on AGASP_BaseProjectile
-  - Adds Phase special attack VFX/voice cue tags and redirects the old Phase special sound cue tag to the new voice tag
-  - Adds camera shake feedback to hit react and introduces a death gameplay cue burst with Blueprint-configured camera shake
-  - Updates Phase, Wukong, enemy, projectile, and hit react assets to use the new sound cue and particle feedback setup
-  - Reorganizes third-party miscellaneous assets and replaces older shared cue assets with more specific per-character cues
-
+- Unreal Engine C++ gameplay framework integration
+- Gameplay Ability System setup with replicated ASC/AttributeSet flows
+- Gameplay Tags, Gameplay Effects, Gameplay Events, and Gameplay Cues
+- melee, ranged, dash, special attack, hit reaction, death, and respawn flows
+- character-specific abilities for Wukong and Phase
+- AI enemies driven by Behavior Trees and GAS abilities
+- replicated projectiles, pickups, guarded treasure, and character selection
+- Steam session menu flow using OnlineSubsystemSteam and Advanced Sessions
+- Blueprint/Data Asset content extension over C++ gameplay foundations
+
+## Development Timeline
+
+## 1. Initial Commit
+
+- Date: 2026-05-15
+- Summary: Created the initial Unreal Engine project baseline.
+
+## 2. Git LFS Setup
+
+- Date: 2026-05-15
+- Summary: Added Git LFS support for Unreal Engine binary assets.
+
+## 3. Add Initial README For Gameplay Ability System Prototype
+
+- Date: 2026-05-15
+- Summary:
+  - Added the first project README.
+  - Documented the initial purpose, architecture direction, and planned Gameplay Ability System focus.
+
+## 4. Ignore IDE Files And Add Project Note
+
+- Date: 2026-05-15
+- Summary:
+  - Added repository hygiene rules for IDE/generated files.
+  - Added early project notes.
+
+## 5. Add Third-Party Wukong Character Asset
+
+- Date: 2026-05-15
+- Summary:
+  - Imported the Wukong character content used as the first playable character prototype.
+
+## 6. Add Player Character And Enhanced Input Setup
+
+- Date: 2026-05-15
+- Summary:
+  - Added base and player character C++ classes with third-person camera setup.
+  - Implemented player controller input bindings for movement, look, and jump.
+  - Added Enhanced Input assets, player Blueprints, GameMode, and test map.
+  - Updated module dependencies for UMG and Gameplay Ability System support.
+
+## 7. Add Initial GAS Ability System Setup
+
+- Date: 2026-05-17
+- Summary:
+  - Added base gameplay ability configuration flags.
+  - Added the Ability System Component to PlayerState using Mixed Replication.
+  - Initialized GAS actor info on player possession and PlayerState replication.
+  - Added startup ability granting support to the base character.
+  - Added skill input bindings for attack, dash, and special actions.
+  - Updated player/controller Blueprints, input mapping assets, test map, and Wukong-related assets.
+
+## 8. Wire Skill Inputs To Native Gameplay Tags
+
+- Date: 2026-05-18
+- Summary:
+  - Added native gameplay tags for attack, dash, and special abilities.
+  - Routed skill input actions through the base character ability activation flow.
+  - Updated movement input to use the cached base character reference.
+  - Updated player ability and Blueprint assets for the first attack ability setup.
+  - Added experimental movement tuning notes for the player character.
+
+## 9. Add GAS Combo Attack Flow
+
+- Date: 2026-05-20
+- Summary:
+  - Added Wukong attack ability assets for start, chain, and finisher attacks.
+  - Added gameplay tags for attack continuation, combo window events, combo-ready states, and movement input blocking.
+  - Updated ability activation to support primary and fallback ability tags for combo chaining.
+  - Blocked movement input while the character has the movement input blocked state tag.
+  - Added attack-specific gameplay effects, gameplay cue, notify, and audio assets.
+  - Updated Wukong attack montages, gameplay cue, player Blueprint, and test map for combo combat.
+
+## 10. Add Melee Attack Trace Event Pipeline
+
+- Date: 2026-05-22
+- Summary:
+  - Added a melee attack notify state with socket-based sphere tracing.
+  - Routed melee hit detection through the GAS gameplay event pipeline.
+  - Added attack hit gameplay tag for melee combat events.
+  - Added Blueprint utility support for dispatching gameplay events with hit result payload data.
+  - Added a custom attack collision channel and character overlap collision setup.
+  - Updated attack ability flow to react to melee hit events.
+  - Updated Wukong attack montages, gameplay cue, player Blueprint, and skeleton assets.
+  - Routed controller alive validation through base character state.
+
+## 11. Add GAS Attributes And Hit Reaction Flow
+
+- Date: 2026-05-28
+- Summary:
+  - Added a custom Ability System Component with ActivateOnGiven support.
+  - Added replicated AttributeSet support for health and mana initialization.
+  - Initialized character attributes through startup Gameplay Effects.
+  - Added hit reaction gameplay ability with cached hit direction vectors.
+  - Added hit react containers for montage, sound, and particle response data.
+  - Added utility helpers for hit direction and gameplay event dispatching.
+  - Added gameplay tags for hit react and auto-activated abilities.
+  - Reorganized ability classes under the AbilitySystem/Abilities folder.
+  - Updated Wukong attack, damage, combo, gameplay cue, and hit react assets.
+
+## 12. Add GAS Attribute Widget Binding Flow
+
+- Date: 2026-05-28
+- Summary:
+  - Added an attribute widget base class for displaying current and max attribute values.
+  - Added widget component support for binding child widgets to GAS attribute change delegates.
+  - Deferred widget binding until the ASC and AttributeSet are initialized.
+  - Broadcasted ASC and AttributeSet initialization from the player character.
+  - Exposed AttributeSet access through base/player character and PlayerState.
+  - Broadcasted attribute initialization events for UI synchronization.
+  - Pushed initial attribute values to widgets before future change events.
+
+## 13. Add Player Stats UI Widgets
+
+- Date: 2026-06-01
+- Summary:
+  - Added player stats widget and reusable health bar widget assets.
+  - Added Blueprint widget component support for GAS attribute UI.
+  - Updated Wukong player Blueprint to use the new UI widget setup.
+
+## 14. Add Dash Ability Flow
+
+- Date: 2026-06-04
+- Summary:
+  - Added player dash ability, dash cooldown effect, dash notify, and dash movement curve.
+  - Added dash gameplay cue, Niagara dash trail FX, and GameplayCue.Dash configuration.
+  - Added Wukong dash/flip animations and updated player, input mapping, test map, and animation assets.
+  - Added gameplay tags for dash cooldown, air-dashed movement state, and intangible state.
+  - Cleared the air-dashed state when the character lands.
+  - Added tangibility checks so melee hit events ignore intangible targets.
+  - Added a gameplay ability helper for removing matching loose gameplay tags.
+  - Renamed and moved Wukong attack and hit react montages into the project animation set.
+
+## 15. Add Death Flow And Combat Audio Cues
+
+- Date: 2026-06-16
+- Summary:
+  - Added death ability/event/state tags and death Gameplay Effect.
+  - Triggered death gameplay events when health reaches zero.
+  - Updated `IsAlive` to use the Dead gameplay tag.
+  - Added Wukong death ability and death montage assets.
+  - Added an attribute reset helper for respawn/retry flows.
+  - Added GameMode support for selecting random PlayerStart spawn points.
+  - Updated Wukong player Blueprint with death, hit react, dash, UI, and audio references.
+  - Added combat sound cues for dash, hit impact, and Wukong attacks.
+  - Enabled the WaveformEditor plugin for audio asset work.
+
+## 16. Add Wukong Special Attack Flow
+
+- Date: 2026-06-22
+- Summary:
+  - Added Wukong special attack ability, cooldown effect, damage effect, montages, notifies, and audio cues.
+  - Added GameplayCue.Special and special attack quote gameplay cues.
+  - Added special attack cooldown gameplay tag.
+  - Added shared attack helper logic to send hit react events and apply damage once per target.
+  - Updated melee attack notify trace settings for special attack hit detection.
+  - Added player post-process component and custom depth setup for special attack visual highlighting.
+  - Added post-process material assets for the special attack effect.
+  - Updated Wukong player Blueprint with special attack startup ability and fade-in post-process presentation.
+  - Adjusted render settings for custom depth and exposure behavior.
+
+## 17. Add Paragon Phase Character Assets
+
+- Date: 2026-06-22
+- Summary:
+  - Added the Paragon Phase content pack with meshes, materials, animations, FX, audio, and maps.
+  - Added the Phase player character Blueprint under GASPrototype characters.
+  - Updated the GameMode Blueprint to reference the new Phase character setup.
+
+## 18. Relocate Paragon Phase Assets To ThirdParty
+
+- Date: 2026-06-22
+- Summary:
+  - Moved imported Paragon Phase content into the ThirdParty content folder.
+  - Kept external/vendor assets separated from project-specific GASPrototype assets.
+
+## 19. Split Player Abilities Into Base And Character Variants
+
+- Date: 2026-06-23
+- Summary:
+  - Moved shared player ability Blueprints into a Base ability folder.
+  - Added Wukong-specific dash and special attack ability variants.
+  - Added Phase-specific dash ability setup using a retargeted dash montage.
+  - Retargeted a Wukong dash animation for Phase to cover the missing native dash animation.
+  - Added Phase animation assets for dash, hit react, flip, and retargeting.
+  - Renamed the Wukong player Blueprint to support character-specific player setups.
+  - Updated Phase player, dash cooldown, and Phase animation Blueprint mask references.
+
+## 20. Add Phase Ranged Attack Flow
+
+- Date: 2026-06-29
+- Summary:
+  - Added a ranged attack ability base with target lookup for forward-aligned enemies.
+  - Added C++ Blueprint utility helpers to find nearby GAS characters by overlap radius.
+  - Used dot product checks to validate forward-facing ranged attack targets.
+  - Added a replicated base projectile actor that applies damage and triggers hit react on overlap.
+  - Added Phase projectile attack ability, projectile notify, attack montage, projectile Blueprint, and emissive projectile material.
+  - Wired the Phase player and Animation Blueprint for the projectile attack setup.
+
+## 21. Add Pushback To Wukong Special Attack
+
+- Date: 2026-07-01
+- Summary:
+  - Added a Blueprint-callable pushback helper for launching hit actors away from the avatar.
+  - Scaled launch force by distance using inner and outer radius falloff.
+  - Supported angled launch arcs and optional debug visualization for pushback direction and force.
+  - Updated Wukong special attack to apply pushback.
+
+## 22. Add Player Character Switch Flow
+
+- Date: 2026-07-02
+- Summary:
+  - Added GameMode-driven character cycling that skips the currently possessed character.
+  - Cleared persisted PlayerState ASC abilities and active effects before possession changes.
+  - Cleaned up attribute widget delegates so repeated character switches do not call destroyed widgets.
+
+## 23. Add Phase Special Attack Flow
+
+- Date: 2026-07-06
+- Summary:
+  - Added a shared special attack ability class under the GAS ability hierarchy.
+  - Added Phase special attack flow with montage, logic, and Gameplay Effect/Cue activation.
+  - Added a BlueprintNativeEvent fade hook on the player character for special attack presentation.
+  - Added Phase special attack VFX using the Phase ult charge particle.
+  - Reused the shared special attack ability path across Phase and Wukong instead of duplicating character logic.
+  - Added character gameplay tags to keep character-specific VFX/Cue routing data-driven.
+  - Preserved gameplay event hit context through damage application for cleaner hit react and VFX integration.
+  - Switched range targeting to sphere trace hit results so abilities can reuse impact/location context.
+  - Updated Wukong special attack with knockback and its own gameplay cue as validation of the shared flow.
+
+## 24. Add Enemy Character GAS Foundation
+
+- Date: 2026-07-06
+- Summary:
+  - Added an enemy character class with its own replicated ASC and AttributeSet.
+  - Initialized enemy GAS actor info, startup abilities, attributes, and health change handling on BeginPlay.
+  - Added a base AI controller and Blueprint controller for future enemy behavior.
+  - Added AIModule dependency for AI controller support.
+  - Added an enemy character Blueprint wired to the new C++ enemy/AI setup.
+  - Reorganized playable character assets under Characters/Player for clearer player/enemy separation.
+
+## 25. Add Paragon Minion Assets And Basic Enemy Setup
+
+- Date: 2026-07-07
+- Summary:
+  - Added Paragon Minions third-party content for enemy prototyping.
+  - Created the enemy character Blueprint for the minion-based enemy setup.
+  - Gave startup abilities, attributes, and UI to the enemy Blueprint.
+  - Created the enemy basic Animation Blueprint with thread-safe animation update.
+  - Renamed shared ability Blueprints with a `_Base` suffix for clearer inheritance.
+
+## 26. Add Enemy Behavior Tree Combat Flow
+
+- Date: 2026-07-15
+- Summary:
+  - Added enemy Behavior Tree and Blackboard flow for combat, return, and idle states.
+  - Started the Behavior Tree from `AGASP_AIController`.
+  - Stored enemy spawn location for return behavior.
+  - Added BT services for AI perception, alive state synchronization, target acquisition, and focus management.
+  - Added BT tasks that drive enemy combat through GAS, including melee attacks, health regeneration, and regeneration cancellation.
+  - Combined Behavior Trees with GAS abilities for enemy attack execution.
+  - Added return and idle flow that restores the enemy to its guarded position and starts out-of-combat regeneration.
+  - Added gameplay tags for enemy abilities and regeneration effects.
+  - Added enemy melee, hit react, death, and health recovery GAS ability/effect assets.
+
+## 27. Gameplay Polish
+
+- Date: 2026-07-15
+- Summary:
+  - Improved gameplay and AI robustness.
+  - Standardized asset naming.
+  - Removed obsolete files.
+
+## 28. Add Guarded Treasure Pickup Flow
+
+- Date: 2026-07-16
+- Summary:
+  - Added replicated pickup actor support that applies a configured Gameplay Effect to overlapping player characters.
+  - Added replicated treasure actor support with a guarded unlock flow and Blueprint event for unlock presentation.
+  - Broadcasted an enemy death delegate so world objects can react to defeated guards outside the GAS ability flow.
+  - Hid and disabled treasure pickup collision until the assigned guard dies.
+  - Added treasure, pickup, and renamed projectile Blueprints using the `BP_GASP_*` naming pattern.
+  - Added Asure chest and Paragon buff FX assets for treasure and pickup presentation.
+  - Updated TestMap with guarded treasure/pickup setup and removed generated placeholder geometry.
+
+## 29. Add Power Resource And Special Cost Flow
+
+- Date: 2026-07-20
+- Summary:
+  - Added replicated Power and MaxPower attributes.
+  - Added Power initialization, clamping, replication notifies, and a dedicated player power bar widget.
+  - Added `GE_PowerCharge` as a startup regeneration effect that slowly fills the Power bar over time.
+  - Added `GE_PowerCharge_OnHit` to reward successful hits by charging the attacker's Power faster.
+  - Added `GE_SpecialCost` so special abilities consume Power on activation.
+  - Updated attack damage helper logic to optionally apply on-hit Power charge effects to the attacker.
+  - Updated projectile hit logic to grant on-hit Power charge to the projectile owner after successful damage/hit react.
+  - Updated player/enemy attack and special ability assets to use Power charge and special cost effects.
+  - Supported multiple initial attribute effects on base characters for cleaner startup effect composition.
+  - Updated UI widget bindings to include the new Power display.
+
+## 30. Clean Up Gameplay Cue And Special Attack Assets
+
+- Date: 2026-07-21
+- Summary:
+  - Updated hit react references to keep the cue name character-agnostic.
+  - Cleaned up Phase and Wukong special attack ability/cue assets after the Power cost changes.
+  - Adjusted projectile overlap handling while preserving damage, hit react, and Power charge flow.
+
+## 31. Move Hit Reactions And Death To Event-Driven GAS Abilities
+
+- Date: 2026-07-24
+- Summary:
+  - Added a server-initiated hit reaction ability activated by `Event.HitReact`.
+  - Moved hit reaction montage, cancellation, and blocking state handling into the Gameplay Ability flow.
+  - Kept `GC_HitReact` focused on cosmetic feedback such as VFX and SFX.
+  - Refactored attack hit handling into `HandleConfirmedHit`.
+  - Centralized target validation, duplicate-hit prevention, damage application, hit reaction dispatching, and source on-hit effects.
+  - Preserved multiplayer authority by having the server dispatch the hit reaction event on the target ASC.
+  - Updated melee and special attack assets to use the new confirmed-hit consequence flow.
+  - Updated player and enemy startup abilities to include event-driven hit react and death abilities.
+  - Kept death routed through the health change flow into `Event.Death`, letting `GA_GASP_Death` own terminal state, cancellation, and blocking behavior.
+  - Simplified initial attribute initialization by validating the Ability System Component once before applying startup effects.
+
+## 32. Fix Instigator Hit React Effects In Gameplay Cue
+
+- Date: 2026-07-27
+- Summary:
+  - Updated the hit react cue flow to read particles and sound from the instigator's HitReactContainer instead of the reacting target.
+  - Preserved the target as the actor receiving the hit reaction while letting the attack source define the impact feedback.
+  - Adjusted `GA_GASP_HitReactByEvent` and `GC_HitReact` assets around the corrected cue parameter flow.
+  - Cleaned up minor base character death comments and range helper formatting.
+
+## 33. Expand Gameplay Cue And Impact Feedback
+
+- Date: 2026-07-30
+- Summary:
+  - Added character-specific attack and hit impact cues for Phase, Wukong, and enemies.
+  - Added Phase voice/audio feedback for special attack and projectile attack, including a dedicated projectile looping sound.
+  - Added native special attack activation audio through `UGASP_SpecialAttack`.
+  - Added native projectile audio support with an AudioComponent and configurable AudioEffect on `AGASP_BaseProjectile`.
+  - Added Phase special attack VFX/voice cue tags.
+  - Redirected the old Phase special sound cue tag to the new voice tag.
+  - Added camera shake feedback to hit react.
+  - Added a death gameplay cue burst with Blueprint-configured camera shake.
+  - Updated Phase, Wukong, enemy, projectile, and hit react assets to use the new sound cue and particle feedback setup.
+  - Reorganized third-party miscellaneous assets and replaced older shared cue assets with more specific per-character cues.
+
+## 34. Add Third-Person Assets To Test Map
+
+- Date: 2026-07-31
+- Summary:
+  - Imported default Third Person level prototyping assets under ThirdParty for test map iteration.
+  - Added prototype meshes, grid materials, colorway instances, and supporting external actor/object data.
+  - Updated TestMap with third-person blockout content to improve traversal and gameplay testing.
+
+## 35. Refine Special Attack Feedback And Enemy Treasure Reset Flow
+
+- Date: 2026-08-04
+- Summary:
+  - Split special attack local feedback into Blueprint-callable helpers for activation sound, fade-in, and fade-out effects.
+  - Updated Phase and Wukong special attack assets to drive the new local activation/end feedback flow.
+  - Added enemy respawn handling that hides the actor during the respawn delay, resets attributes, returns it to the start location, and restores visibility.
+  - Broadcasted enemy respawn events so dependent gameplay actors can react when the guard returns.
+  - Reworked treasure unlock handling to spawn its pickup on authority instead of keeping a hidden child actor.
+  - Added treasure relock support when the guarding enemy respawns, including replicated open/close animation hooks.
+  - Updated treasure, pickup, chest animation, player Blueprints, death ability, and TestMap assets around the refined interaction loop.
+
+## 36. Add Steam Session Menu And Character Selection Flow
+
+- Date: 2026-08-05
+- Summary:
+  - Enabled Steam online subsystem support with AdvancedSessions and AdvancedSteamSessions plugins.
+  - Added Steam net driver config, AppId 480 setup, and default game map routing through SessionMenu.
+  - Added a GASP AdvancedFriendsGameInstance to persist the selected character gameplay tag between menu and gameplay.
+  - Added SessionMenu map and `WBP_SessionMenu` flow for creating, finding, joining sessions, and toggling Phase/Wukong selection.
+  - Routed character selection through the player controller and stored the tag on PlayerState.
+  - Updated `GASP_GameMode` to choose the default pawn class from the selected character tag.
+  - Reset ASC state before respawning after character selection changes.
+  - Replaced the old `BP_GameMode` setup with separate gameplay/menu GameMode assets.
+  - Updated player controller and map assets around the session flow.

@@ -21,7 +21,14 @@ protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo,
 	                             const FGameplayEventData* TriggerEventData) override;
-
+	
+	/**
+	 * Searches for nearby characters and returns the one with the highest forward alignment
+	 * (dot product) above the specified threshold.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "GASP|Abilities")
+	AGASP_BaseCharacter* FindBestTarget(const float DotThreshold = 0.7f, const float SearchRange = 2000.f);
+	
 	UFUNCTION(BlueprintCallable, Category = "GASP|Abilities")
 	void HandleConfirmedHit(
 		const FGameplayEventData& Payload,

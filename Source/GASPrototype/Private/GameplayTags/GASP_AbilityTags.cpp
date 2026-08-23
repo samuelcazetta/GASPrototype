@@ -16,8 +16,8 @@ namespace GASPTags
 		
 		namespace Enemy
 		{
-			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attack, "GASPTags.Abilities.Enemy.Attack", "Tag for Enemy Attack Abilities")
-			UE_DEFINE_GAMEPLAY_TAG_COMMENT(HealthRecover, "GASPTags.Abilities.Enemy.HealthRecover", "Tag for Enemy Health Recover Ability")
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attack, "GASPTags.Abilities.Enemy.Attack", "Tag for Enemy Attack Abilities");
+			UE_DEFINE_GAMEPLAY_TAG_COMMENT(HealthRecover, "GASPTags.Abilities.Enemy.HealthRecover", "Tag for Enemy Health Recover Ability");
 		}
 		
 		namespace Cooldown

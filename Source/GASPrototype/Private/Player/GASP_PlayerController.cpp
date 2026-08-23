@@ -133,12 +133,14 @@ void AGASP_PlayerController::Look(const FInputActionValue& Value)
 void AGASP_PlayerController::Attack()
 {
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
+	if (BaseCharacter->IsMovementBlocked()) return;
 	BaseCharacter->ActivateAbility(GASPTags::Abilities::Attack, GASPTags::Abilities::AttackContinue);
 }
 
 void AGASP_PlayerController::Special()
 {
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
+	if (BaseCharacter->IsMovementBlocked()) return;
 	BaseCharacter->ActivateAbility(GASPTags::Abilities::Special);
 	
 }
@@ -146,6 +148,8 @@ void AGASP_PlayerController::Special()
 void AGASP_PlayerController::Dash()
 {
 	if (!IsValid(BaseCharacter) || !IsAlive()) return;
+	if (BaseCharacter->IsMovementBlocked()) return;
+	
 	BaseCharacter->ActivateAbility(GASPTags::Abilities::Dash);
 }
 

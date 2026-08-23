@@ -26,6 +26,7 @@ public class GASPrototype : ModuleRules
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "AdvancedSessions" });
+		DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

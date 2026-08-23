@@ -18,7 +18,7 @@ namespace GASPTags
 
 		namespace Enemy
 		{
-			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attack)
+			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attack);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(HealthRecover);
 		}
 		
@@ -26,6 +26,6 @@ namespace GASPTags
 		{
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Dash);
 			UE_DECLARE_GAMEPLAY_TAG_EXTERN(Special);
-		}
+		} 
 	}
 }

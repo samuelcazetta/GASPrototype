@@ -17,49 +17,53 @@ AGASP_BaseProjectile::AGASP_BaseProjectile()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
-	
+
 	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	SetRootComponent(SceneRoot);
-	
+
 	ProjectileMoveComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMoveComponent"));
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AudioComponent->SetupAttachment(SceneRoot);
-	
 }
 
 void AGASP_BaseProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-	
+
 	// Destroy when hitting world/static actors
 	if (!OtherActor->IsA<AGASP_BaseCharacter>())
 	{
 		Destroy();
 		return;
 	}
-	
+
 	// checks
 	AGASP_BaseCharacter* BaseCharacter = Cast<AGASP_BaseCharacter>(OtherActor);
 	if (!IsValid(BaseCharacter) || !BaseCharacter->IsAlive() || IsOwnedBy(BaseCharacter)) return;
 	UAbilitySystemComponent* AbilitySystemComponent = BaseCharacter->GetAbilitySystemComponent();
-	if (!IsValid(AbilitySystemComponent)) return;
-	//if (!IsValid(AbilitySystemComponent) || !HasAuthority()) return;
-	
-	// Apply Damage GE
+	if (!IsValid(AbilitySystemComponent) || !HasAuthority()) return;
+
+	// context handle
 	FGameplayEffectContextHandle DamageContextHandle = AbilitySystemComponent->MakeEffectContext();
-	FGameplayEffectSpecHandle DamageEffectSpec = AbilitySystemComponent->MakeOutgoingSpec(DamageEffect, 1.f, DamageContextHandle);
-	if (!DamageEffectSpec.IsValid()) return;
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DamageEffectSpec.Data.Get());
-	
-	// Hit React Event
 	FHitResult HitResult;
 	HitResult.ImpactPoint = GetActorLocation();
 	DamageContextHandle.AddHitResult(HitResult);
+
+	// Apply Damage GE
+	FGameplayEffectSpecHandle DamageEffectSpec = AbilitySystemComponent->MakeOutgoingSpec(
+		DamageEffect,
+		1.f,
+		DamageContextHandle
+	);
+	if (!DamageEffectSpec.IsValid()) return;
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DamageEffectSpec.Data.Get());
+
+	// Hit React Event
 	FGameplayEventData Payload;
 	Payload.Instigator = GetInstigator();
 	Payload.ContextHandle = DamageContextHandle;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(BaseCharacter, GASPTags::Events::HitReact, Payload);
-	
+
 	// Apply Power Charge GE
 	if (IsValid(OnHitPowerChargeEffect))
 	{
@@ -67,13 +71,14 @@ void AGASP_BaseProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 		if (!IsValid(OwnerCharacter)) return;
 		UAbilitySystemComponent* OwnerASC = OwnerCharacter->GetAbilitySystemComponent();
 		if (!IsValid(OwnerASC)) return;
-		
+
 		FGameplayEffectContextHandle PowerChargeContextHandle = OwnerASC->MakeEffectContext();
-		FGameplayEffectSpecHandle PowerChargeEffectSpec = OwnerASC->MakeOutgoingSpec(OnHitPowerChargeEffect, 1.f, PowerChargeContextHandle);
+		FGameplayEffectSpecHandle PowerChargeEffectSpec = OwnerASC->MakeOutgoingSpec(
+			OnHitPowerChargeEffect, 1.f, PowerChargeContextHandle);
 		if (!PowerChargeEffectSpec.IsValid()) return;
 		OwnerASC->ApplyGameplayEffectSpecToSelf(*PowerChargeEffectSpec.Data.Get());
 	}
-	
+
 	Destroy();
 }
 
@@ -81,9 +86,8 @@ void AGASP_BaseProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	SetLifeSpan(LifeSpan);
-	
+
 	if (!IsValid(AudioEffect)) return;
 	AudioComponent->SetSound(AudioEffect);
 	AudioComponent->Play();
 }
-

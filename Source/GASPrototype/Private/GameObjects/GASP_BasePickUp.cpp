@@ -12,7 +12,7 @@
 AGASP_BasePickUp::AGASP_BasePickUp()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	SetReplicates(true);
+	bReplicates = true;
 	
 	PickUpParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("PickUp Particle"));
 	RootComponent = PickUpParticleComponent;
@@ -34,8 +34,8 @@ void AGASP_BasePickUp::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (!IsValid(ASC)) return;
 
 	FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
-	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(PickUpEffect, 1.f, ContextHandle);
 	ContextHandle.AddSourceObject(this);
+	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(PickUpEffect, 1.f, ContextHandle);
 	if (!SpecHandle.IsValid()) return;
 
 	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
