@@ -22,7 +22,9 @@ The project was designed from the start as a GAS-focused, multiplayer-aware game
 
 ## Demo
 
-Demo video/GIF coming soon.
+[Demo video](https://youtu.be/G7FzDIgbkhM)
+<img width="1672" height="941" alt="Imagem do Codex 1 de set  de 2026, 18_56_15" src="https://github.com/user-attachments/assets/a8dbeb64-fc66-4ef6-b7f1-ef5de8dce1c3" />
+
 
 ---
 
