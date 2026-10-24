@@ -10,7 +10,7 @@
 AGASP_PlayerState::AGASP_PlayerState()
 {
 	//Raise PlayerState net update frequency, necessary to use GAS here. The default value is 1. 
-	NetUpdateFrequency = 100.f;
+	SetNetUpdateFrequency(100.f);
 	
 	AbilitySystemComponent = CreateDefaultSubobject<UGASP_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
