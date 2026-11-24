@@ -1,4 +1,6 @@
 # Unreal Gameplay Ability System - Technical Gameplay Prototype
+![Human Written](https://img.shields.io/badge/Code-Human%20Written-brightgreen)
+
 
 ## Overview
 
